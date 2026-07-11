@@ -1,0 +1,27 @@
+[package]
+name = "locers"
+version = "0.1.0"
+description = "Locers local development environment control"
+authors = ["Locers"]
+edition = "2021"
+
+[lib]
+name = "locers_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.5.1", features = [] }
+
+[dependencies]
+chrono = { version = "0.4.42", features = ["serde"] }
+dirs = "6.0.0"
+rusqlite = { version = "0.37.0", features = ["bundled"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+sysinfo = "0.37.2"
+tauri = { version = "2.9.2", features = [] }
+thiserror = "2.0.17"
+uuid = { version = "1.18.1", features = ["v4", "serde"] }
+
+[dev-dependencies]
+tempfile = "3.23.0"
