@@ -2,6 +2,8 @@ import { invoke } from "@tauri-apps/api/core";
 import type {
   AppInfoDto,
   DataCleanupResultDto,
+  FormulaInstallResultDto,
+  FormulaStatusDto,
   LogReadResultDto,
   OperationHistoryDto,
   OperationResultDto,
@@ -80,6 +82,24 @@ const demoServices: ServiceSummaryDto[] = [
 ];
 
 export const api = {
+  getFormulaStatuses: () =>
+    isTauriRuntime()
+      ? invoke<FormulaStatusDto[]>("get_formula_statuses")
+      : Promise.resolve([
+          { formula: "postgresql@16", installed: true, version: "16.4" },
+          { formula: "redis", installed: true, version: "7.2.5" }
+        ]),
+  installFormula: (formula: string) =>
+    isTauriRuntime()
+      ? invoke<FormulaInstallResultDto>("install_formula", { formula })
+      : Promise.resolve({
+          formula,
+          command: ["brew", "install", "--formula", formula],
+          stdout: `Successfully installed ${formula}`,
+          stderr: "",
+          success: true,
+          service_id: `demo-${formula}`
+        }),
   getAppInfo: () =>
     isTauriRuntime()
       ? invoke<AppInfoDto>("get_app_info")

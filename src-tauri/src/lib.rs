@@ -17,10 +17,10 @@ use db::Database;
 use error::{AppError, AppResult};
 use homebrew::{HomebrewProvider, ServiceProvider};
 use models::{
-    AppInfoDto, DataCleanupResultDto, LogReadOptionsDto, LogReadResultDto, OperationHistoryDto,
-    OperationResultDto, PortBindingDto, PortRefreshResultDto, RefreshResultDto,
-    ResourceMetricPointDto, RuntimeMetricsRefreshResultDto, ServiceDetailDto, ServiceStatus,
-    ServiceSummaryDto,
+    AppInfoDto, DataCleanupResultDto, FormulaInstallResultDto, FormulaStatusDto, LogReadOptionsDto,
+    LogReadResultDto, OperationHistoryDto, OperationResultDto, PortBindingDto,
+    PortRefreshResultDto, RefreshResultDto, ResourceMetricPointDto, RuntimeMetricsRefreshResultDto,
+    ServiceDetailDto, ServiceStatus, ServiceSummaryDto,
 };
 use tauri::{async_runtime, AppHandle, Manager, State};
 
@@ -37,6 +37,106 @@ struct AppState {
 const RUNTIME_SNAPSHOT_PERSIST_INTERVAL: Duration = Duration::from_secs(10);
 const MIN_RUNTIME_SAMPLE_INTERVAL: Duration = Duration::from_millis(500);
 const DATABASE_MAINTENANCE_INTERVAL: Duration = Duration::from_secs(6 * 60 * 60);
+const INSTALLABLE_FORMULAE: &[&str] = &[
+    "postgresql@16",
+    "mysql",
+    "redis",
+    "rabbitmq",
+    "kafka",
+    "nginx",
+    "caddy",
+    "memcached",
+    "meilisearch",
+    "minio",
+];
+
+fn validate_installable_formula(formula: &str) -> AppResult<()> {
+    if INSTALLABLE_FORMULAE.contains(&formula) {
+        Ok(())
+    } else {
+        Err(AppError::Command(format!(
+            "formula is not available in the Locers catalog: {formula}"
+        )))
+    }
+}
+
+#[tauri::command]
+async fn get_formula_statuses(app: AppHandle) -> AppResult<Vec<FormulaStatusDto>> {
+    async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        INSTALLABLE_FORMULAE
+            .iter()
+            .map(|formula| {
+                let (installed, version) = state.provider.formula_status(formula)?;
+                Ok(FormulaStatusDto {
+                    formula: (*formula).into(),
+                    installed,
+                    version,
+                })
+            })
+            .collect()
+    })
+    .await
+    .map_err(|err| AppError::Command(format!("formula status task failed: {err}")))?
+}
+
+#[tauri::command]
+async fn install_formula(app: AppHandle, formula: String) -> AppResult<FormulaInstallResultDto> {
+    validate_installable_formula(&formula)?;
+    async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        let command = vec![
+            "brew".into(),
+            "install".into(),
+            "--formula".into(),
+            formula.clone(),
+        ];
+        let output = state.provider.install(&formula)?;
+        if output.exit_code != 0 {
+            return Err(AppError::OperationFailed {
+                message: "Homebrew install failed".into(),
+                operation: None,
+            });
+        }
+
+        refresh_services_blocking(&state)?;
+        let service = state
+            .db
+            .lock()
+            .map_err(|_| AppError::StatePoisoned)?
+            .list_services()?
+            .into_iter()
+            .find(|service| service.formula == formula);
+        let service_id = service.as_ref().map(|service| service.id.clone());
+        if let Some(service) = service {
+            state
+                .db
+                .lock()
+                .map_err(|_| AppError::StatePoisoned)?
+                .record_operation(
+                    &service.id,
+                    &service.provider,
+                    "install",
+                    &command,
+                    output.exit_code,
+                    output.duration_ms,
+                    &output.stdout,
+                    &output.stderr,
+                    None,
+                )?;
+        }
+        Ok(FormulaInstallResultDto {
+            formula,
+            command,
+            stdout: output.stdout,
+            stderr: output.stderr,
+            success: true,
+            service_id,
+        })
+    })
+    .await
+    .map_err(|err| AppError::Command(format!("install task failed: {err}")))?
+}
 
 struct RuntimeMetricsState {
     collector: system_probe::RuntimeMetricsCollector,
@@ -639,6 +739,8 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            get_formula_statuses,
+            install_formula,
             refresh_services,
             refresh_ports,
             refresh_runtime_metrics,

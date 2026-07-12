@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type NavItem = "services" | "ports" | "activity" | "settings";
+export type NavItem = "services" | "install" | "ports" | "activity" | "settings";
 export type Language = "en" | "zh";
 export type RefreshMode = "energySaver" | "standard" | "realtime";
 

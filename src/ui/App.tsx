@@ -32,6 +32,7 @@ import {
   Gauge,
   HardDrive,
   Info,
+  PackagePlus,
   Trash2
 } from "lucide-react";
 import { api, formatTauriError } from "../api/client";
@@ -76,6 +77,9 @@ export function App() {
           <button className={nav === "services" ? "active" : ""} onClick={() => setNav("services")}>
             <Database size={16} /> {t("services")}
           </button>
+          <button className={nav === "install" ? "active" : ""} onClick={() => setNav("install")}>
+            <PackagePlus size={16} /> {t("install")}
+          </button>
           <button className={nav === "ports" ? "active" : ""} onClick={() => setNav("ports")}>
             <PlugZap size={16} /> {t("ports")}
           </button>
@@ -90,11 +94,238 @@ export function App() {
 
       <section className="workspace">
         {nav === "services" && <ServicesView />}
+        {nav === "install" && <InstallView />}
         {nav === "ports" && <PortsView />}
         {nav === "activity" && <ActivityView />}
         {nav === "settings" && <SettingsView />}
       </section>
     </main>
+  );
+}
+
+const INSTALL_CATALOG = [
+  {
+    formula: "postgresql@16",
+    name: "PostgreSQL 16",
+    description: ["Relational database", "关系型数据库"],
+    port: 5432
+  },
+  {
+    formula: "mysql",
+    name: "MySQL",
+    description: ["Relational database", "关系型数据库"],
+    port: 3306
+  },
+  { formula: "redis", name: "Redis", description: ["In-memory cache", "内存缓存"], port: 6379 },
+  {
+    formula: "rabbitmq",
+    name: "RabbitMQ",
+    description: ["Message broker", "消息队列"],
+    port: 5672
+  },
+  { formula: "kafka", name: "Kafka", description: ["Event streaming", "事件流服务"], port: 9092 },
+  {
+    formula: "nginx",
+    name: "Nginx",
+    description: ["Web server and proxy", "Web 服务器与代理"],
+    port: 8080
+  },
+  {
+    formula: "caddy",
+    name: "Caddy",
+    description: ["Web server with automatic HTTPS", "自动 HTTPS Web 服务器"],
+    port: 80
+  },
+  {
+    formula: "memcached",
+    name: "Memcached",
+    description: ["Distributed memory cache", "分布式内存缓存"],
+    port: 11211
+  },
+  {
+    formula: "meilisearch",
+    name: "Meilisearch",
+    description: ["Search engine", "搜索引擎"],
+    port: 7700
+  },
+  {
+    formula: "minio",
+    name: "MinIO",
+    description: ["S3-compatible object storage", "兼容 S3 的对象存储"],
+    port: 9000
+  }
+] as const;
+
+function InstallView() {
+  const queryClient = useQueryClient();
+  const { t, language } = useI18n();
+  const [search, setSearch] = useState("");
+  const [installFilter, setInstallFilter] = useState<"all" | "installed">("all");
+  const [confirmFormula, setConfirmFormula] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const statusesQuery = useQuery({
+    queryKey: ["formula-statuses"],
+    queryFn: api.getFormulaStatuses
+  });
+  const statusByFormula = new Map((statusesQuery.data ?? []).map((item) => [item.formula, item]));
+  const installedCount = INSTALL_CATALOG.filter(
+    (item) => statusByFormula.get(item.formula)?.installed
+  ).length;
+  const filtered = INSTALL_CATALOG.filter((item) => {
+    const matchesFilter =
+      installFilter === "all" || statusByFormula.get(item.formula)?.installed === true;
+    const matchesSearch = `${item.name} ${item.formula} ${item.description.join(" ")}`
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+  const selected = INSTALL_CATALOG.find((item) => item.formula === confirmFormula);
+
+  const installMutation = useMutation({
+    mutationFn: api.installFormula,
+    onSuccess: (result) => {
+      const item = INSTALL_CATALOG.find((entry) => entry.formula === result.formula);
+      setConfirmFormula(null);
+      setError(null);
+      setNotice(t("installSuccess").replace("{name}", item?.name ?? result.formula));
+      queryClient.invalidateQueries({ queryKey: ["formula-statuses"] });
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["activity"] });
+    },
+    onError: (err) => {
+      setConfirmFormula(null);
+      setError(formatTauriError(err));
+    }
+  });
+
+  return (
+    <div className="single-pane install-pane">
+      <div className="toolbar">
+        <div>
+          <h1>{t("install")}</h1>
+        </div>
+      </div>
+      <label className="search-box install-search">
+        <Search size={16} />
+        <input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder={t("searchInstallServices")}
+        />
+      </label>
+      <div className="install-filter" role="tablist" aria-label={t("installServices")}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={installFilter === "all"}
+          className={installFilter === "all" ? "active" : ""}
+          onClick={() => setInstallFilter("all")}
+        >
+          {t("allInstallServices")} <span>{INSTALL_CATALOG.length}</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={installFilter === "installed"}
+          className={installFilter === "installed" ? "active" : ""}
+          onClick={() => setInstallFilter("installed")}
+        >
+          {t("installed")} <span>{installedCount}</span>
+        </button>
+      </div>
+      {notice && (
+        <div className="install-notice">
+          <Check size={16} /> {notice}
+        </div>
+      )}
+      {error && <div className="inline-error">{error}</div>}
+      <div className="install-grid">
+        {filtered.map((item) => {
+          const status = statusByFormula.get(item.formula);
+          const installed = status?.installed ?? false;
+          const pending = installMutation.isPending && installMutation.variables === item.formula;
+          return (
+            <article className="install-card" key={item.formula}>
+              <div className="install-card-icon">
+                <PackagePlus size={19} />
+              </div>
+              <div className="install-card-copy">
+                <h2>{item.name}</h2>
+                <p>{item.description[language === "zh" ? 1 : 0]}</p>
+                <div className="install-meta">
+                  <code>{item.formula}</code>
+                  <span>
+                    {t("defaultPort")} {item.port}
+                  </span>
+                </div>
+              </div>
+              <div className="install-card-action">
+                {installed ? (
+                  <span className="installed-label">
+                    <Check size={14} />
+                    {t("installed")}
+                    {status?.version ? ` ${status.version}` : ""}
+                  </span>
+                ) : (
+                  <button
+                    className="primary-button"
+                    disabled={pending || statusesQuery.isLoading}
+                    onClick={() => setConfirmFormula(item.formula)}
+                  >
+                    {pending ? <Loader2 className="spin" size={15} /> : <PackagePlus size={15} />}
+                    {pending ? t("installing") : t("installAction")}
+                  </button>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      {filtered.length === 0 && installFilter === "installed" && (
+        <div className="empty-state">{t("noInstalledServices")}</div>
+      )}
+      {selected && (
+        <div
+          className="dialog-backdrop"
+          onMouseDown={() => !installMutation.isPending && setConfirmFormula(null)}
+        >
+          <section
+            className="confirm-dialog install-dialog"
+            role="alertdialog"
+            aria-modal="true"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="dialog-content">
+              <h2>{t("installConfirmTitle").replace("{name}", selected.name)}</h2>
+              <p>{t("installConfirmDescription")}</p>
+              <code className="delete-command">brew install --formula {selected.formula}</code>
+              <div className="dialog-actions">
+                <button
+                  disabled={installMutation.isPending}
+                  onClick={() => setConfirmFormula(null)}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  className="primary-button"
+                  disabled={installMutation.isPending}
+                  onClick={() => installMutation.mutate(selected.formula)}
+                >
+                  {installMutation.isPending ? (
+                    <Loader2 className="spin" size={15} />
+                  ) : (
+                    <PackagePlus size={15} />
+                  )}
+                  {installMutation.isPending ? t("installing") : t("installAction")}
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+    </div>
   );
 }
 

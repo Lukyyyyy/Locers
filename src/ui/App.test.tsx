@@ -33,6 +33,19 @@ function activityDate(daysAgo: number, hour: number, minute: number) {
 }
 
 function mockDefaultInvoke(command: string) {
+  if (command === "get_formula_statuses") {
+    return Promise.resolve([{ formula: "redis", installed: true, version: "7.2.5" }]);
+  }
+  if (command === "install_formula") {
+    return Promise.resolve({
+      formula: "mysql",
+      command: ["brew", "install", "--formula", "mysql"],
+      stdout: "installed",
+      stderr: "",
+      success: true,
+      service_id: "svc-mysql"
+    });
+  }
   if (command === "get_app_info") {
     return Promise.resolve({
       version: "0.1.0",
@@ -767,16 +780,46 @@ describe("App", () => {
     renderApp();
     await screen.findByRole("heading", { name: "redis" });
 
-    await user.click(screen.getByRole("button", { name: "Delete service: redis" }));
+    await user.click(screen.getByRole("button", { name: "Uninstall service: redis" }));
     expect(screen.getByRole("alertdialog")).toBeInTheDocument();
     expect(invoke).not.toHaveBeenCalledWith("remove_service", expect.anything());
 
     await user.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Delete service: redis" }));
-    await user.click(screen.getByRole("button", { name: /^Delete service$/ }));
+    await user.click(screen.getByRole("button", { name: "Uninstall service: redis" }));
+    await user.click(screen.getByRole("button", { name: /^Uninstall service$/ }));
     expect(invoke).toHaveBeenCalledWith("remove_service", { serviceId: "svc-redis" });
+  });
+
+  it("installs a catalog service after confirmation", async () => {
+    const user = userEvent.setup();
+    renderApp();
+    await user.click(screen.getByRole("button", { name: "Install" }));
+    await screen.findByRole("heading", { name: "Install" });
+
+    const mysqlCard = screen.getByRole("heading", { name: "MySQL" }).closest("article");
+    expect(mysqlCard).not.toBeNull();
+    await user.click(within(mysqlCard!).getByRole("button", { name: "Install" }));
+    expect(screen.getByText("brew install --formula mysql")).toBeInTheDocument();
+    await user.click(
+      within(screen.getByRole("alertdialog")).getByRole("button", { name: "Install" })
+    );
+
+    expect(invoke).toHaveBeenCalledWith("install_formula", { formula: "mysql" });
+    expect(await screen.findByText("MySQL was installed successfully.")).toBeInTheDocument();
+  });
+
+  it("filters the install catalog to installed services", async () => {
+    const user = userEvent.setup();
+    renderApp();
+    await user.click(screen.getByRole("button", { name: "Install" }));
+    await screen.findByRole("heading", { name: "Install" });
+
+    await user.click(screen.getByRole("tab", { name: "Installed 1" }));
+
+    expect(screen.getByRole("heading", { name: "Redis" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "MySQL" })).not.toBeInTheDocument();
   });
 
   it("filters services with the custom status listbox", async () => {

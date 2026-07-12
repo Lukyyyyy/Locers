@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use serde_json::json;
 use std::collections::HashSet;
+use std::time::Duration;
 
 use crate::{
     command_runner::{CommandOutput, CommandRunner},
@@ -65,6 +66,27 @@ impl HomebrewProvider {
             "restart" => self.restart(service_name),
             _ => unreachable!("unsupported operation"),
         }
+    }
+
+    pub fn formula_status(&self, formula: &str) -> AppResult<(bool, Option<String>)> {
+        let brew = CommandRunner::find_brew()?;
+        let output = self
+            .runner
+            .run(&brew, &["list", "--formula", "--versions", formula])?;
+        if output.exit_code != 0 {
+            return Ok((false, None));
+        }
+        let version = output.stdout.split_whitespace().nth(1).map(str::to_string);
+        Ok((true, version))
+    }
+
+    pub fn install(&self, formula: &str) -> AppResult<CommandOutput> {
+        let brew = CommandRunner::find_brew()?;
+        self.runner.run_with_timeout(
+            &brew,
+            &["install", "--formula", formula],
+            Duration::from_secs(15 * 60),
+        )
     }
 
     pub fn parse_services_json(input: &str) -> AppResult<Vec<DiscoveredService>> {

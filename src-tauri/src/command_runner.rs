@@ -37,6 +37,15 @@ impl CommandRunner {
     }
 
     pub fn run(&self, program: &str, args: &[&str]) -> AppResult<CommandOutput> {
+        self.run_with_timeout(program, args, self.timeout)
+    }
+
+    pub fn run_with_timeout(
+        &self,
+        program: &str,
+        args: &[&str],
+        timeout: Duration,
+    ) -> AppResult<CommandOutput> {
         let started_at = Instant::now();
         let mut child = Command::new(program)
             .args(args)
@@ -55,11 +64,11 @@ impl CommandRunner {
                     duration_ms: started_at.elapsed().as_millis() as i64,
                 });
             }
-            if started_at.elapsed() > self.timeout {
+            if started_at.elapsed() > timeout {
                 let _ = child.kill();
                 return Err(AppError::Command(format!(
                     "{program} timed out after {}ms",
-                    self.timeout.as_millis()
+                    timeout.as_millis()
                 )));
             }
             thread::sleep(Duration::from_millis(20));

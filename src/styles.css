@@ -222,6 +222,140 @@ h3 {
   border-color: #2f7cf6;
 }
 
+.install-pane {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.install-search {
+  width: min(460px, 100%);
+  margin: 0 0 14px;
+}
+
+.install-filter {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #dce1e8;
+}
+
+.install-filter button {
+  height: 32px;
+  color: #697486;
+  background: transparent;
+  border-color: transparent;
+}
+
+.install-filter button.active {
+  color: #1f67d6;
+  background: #eaf2ff;
+}
+
+.install-filter button span {
+  min-width: 20px;
+  padding: 1px 6px;
+  color: inherit;
+  background: #e9edf3;
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+.install-filter button.active span {
+  background: #d6e6ff;
+}
+
+.install-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.install-card {
+  min-height: 144px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #dce1e8;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.install-card-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #2f7cf6;
+  background: #edf4ff;
+  border-radius: 9px;
+}
+
+.install-card-copy h2 {
+  font-size: 15px;
+}
+
+.install-card-copy > p {
+  color: #6e7888;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.install-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+  margin-top: 10px;
+  color: #7a8494;
+  font-size: 12px;
+}
+
+.install-meta code {
+  color: #485467;
+  background: #f3f5f8;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.install-card-action {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+}
+
+.installed-label,
+.install-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #237a4b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.install-notice {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #eaf7ef;
+  border: 1px solid #bfe5cd;
+  border-radius: 7px;
+}
+
+.install-dialog {
+  padding: 22px;
+}
+
+@media (max-width: 880px) {
+  .install-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .refresh-icon-button {
   width: 36px;
   height: 36px;

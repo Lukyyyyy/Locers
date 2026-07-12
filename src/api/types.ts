@@ -129,6 +129,21 @@ export interface OperationResultDto {
   refresh: RefreshResultDto;
 }
 
+export interface FormulaStatusDto {
+  formula: string;
+  installed: boolean;
+  version?: string | null;
+}
+
+export interface FormulaInstallResultDto {
+  formula: string;
+  command: string[];
+  stdout: string;
+  stderr: string;
+  success: boolean;
+  service_id?: string | null;
+}
+
 export interface LogReadResultDto {
   source?: LogSourceDto | null;
   lines: string[];

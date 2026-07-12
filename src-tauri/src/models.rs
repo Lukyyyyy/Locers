@@ -166,6 +166,23 @@ pub struct OperationResultDto {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FormulaStatusDto {
+    pub formula: String,
+    pub installed: bool,
+    pub version: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FormulaInstallResultDto {
+    pub formula: String,
+    pub command: Vec<String>,
+    pub stdout: String,
+    pub stderr: String,
+    pub success: bool,
+    pub service_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogReadOptionsDto {
     pub max_lines: Option<usize>,
     pub query: Option<String>,
