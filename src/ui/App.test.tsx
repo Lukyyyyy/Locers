@@ -822,6 +822,29 @@ describe("App", () => {
     expect(screen.queryByRole("heading", { name: "MySQL" })).not.toBeInTheDocument();
   });
 
+  it("does not show a zero installed count while statuses are loading", async () => {
+    const user = userEvent.setup();
+    let resolveStatuses: (value: unknown) => void = () => undefined;
+    const pendingStatuses = new Promise((resolve) => {
+      resolveStatuses = resolve;
+    });
+    vi.mocked(invoke).mockImplementation((command: string) => {
+      if (command === "get_formula_statuses") return pendingStatuses;
+      return mockDefaultInvoke(command);
+    });
+
+    renderApp();
+    await user.click(screen.getByRole("button", { name: "Install" }));
+
+    const installedTab = screen.getByRole("tab", { name: "Installed …" });
+    expect(installedTab).toBeDisabled();
+    expect(screen.queryByRole("tab", { name: "Installed 0" })).not.toBeInTheDocument();
+
+    resolveStatuses([{ formula: "redis", installed: true, version: "7.2.5" }]);
+
+    expect(await screen.findByRole("tab", { name: "Installed 1" })).toBeEnabled();
+  });
+
   it("filters services with the custom status listbox", async () => {
     const user = userEvent.setup();
     renderApp();

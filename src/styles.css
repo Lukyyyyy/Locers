@@ -2366,7 +2366,8 @@ select,
 }
 
 .resource-ranking .ranking-rows {
-  flex: 0 0 auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .monitor-panel-header {
@@ -2565,6 +2566,7 @@ select,
 
 .ranking-empty {
   display: grid;
+  height: 100%;
   min-height: 96px;
   place-items: center;
   color: #7b8799;

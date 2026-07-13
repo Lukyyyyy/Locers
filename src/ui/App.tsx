@@ -170,6 +170,7 @@ function InstallView() {
     queryFn: api.getFormulaStatuses
   });
   const statusByFormula = new Map((statusesQuery.data ?? []).map((item) => [item.formula, item]));
+  const statusesLoaded = statusesQuery.data !== undefined;
   const installedCount = INSTALL_CATALOG.filter(
     (item) => statusByFormula.get(item.formula)?.installed
   ).length;
@@ -230,9 +231,10 @@ function InstallView() {
           role="tab"
           aria-selected={installFilter === "installed"}
           className={installFilter === "installed" ? "active" : ""}
+          disabled={!statusesLoaded}
           onClick={() => setInstallFilter("installed")}
         >
-          {t("installed")} <span>{installedCount}</span>
+          {t("installed")} <span>{statusesLoaded ? installedCount : "…"}</span>
         </button>
       </div>
       {notice && (
