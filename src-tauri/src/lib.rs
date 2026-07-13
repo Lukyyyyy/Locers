@@ -17,11 +17,11 @@ use db::Database;
 use error::{AppError, AppResult};
 use homebrew::{HomebrewProvider, ServiceProvider};
 use models::{
-    AppInfoDto, DataCleanupResultDto, FormulaInstallResultDto, FormulaStatusDto,
-    FormulaUpgradeResultDto, LogReadOptionsDto, LogReadResultDto, OperationHistoryDto,
-    OperationResultDto, PortBindingDto, PortRefreshResultDto, RefreshResultDto,
-    ResourceMetricPointDto, RuntimeMetricsRefreshResultDto, ServiceDetailDto, ServiceStatus,
-    ServiceSummaryDto,
+    AppInfoDto, DataCleanupResultDto, FormulaCatalogItemDto, FormulaInstallResultDto,
+    FormulaStatusDto, FormulaUpgradeResultDto, LogReadOptionsDto, LogReadResultDto,
+    OperationHistoryDto, OperationResultDto, PortBindingDto, PortRefreshResultDto,
+    RefreshResultDto, ResourceMetricPointDto, RuntimeMetricsRefreshResultDto, ServiceDetailDto,
+    ServiceStatus, ServiceSummaryDto,
 };
 use tauri::{async_runtime, AppHandle, Manager, State};
 
@@ -32,27 +32,60 @@ struct AppState {
     log_session_offsets: Mutex<HashMap<String, HashMap<String, u64>>>,
     runtime_metrics: Mutex<RuntimeMetricsState>,
     system_metrics: Mutex<sysinfo::System>,
+    formula_catalog: Mutex<Option<Vec<FormulaCatalogItemDto>>>,
+    formula_catalog_path: PathBuf,
     started_at: chrono::DateTime<chrono::Utc>,
 }
 
 const RUNTIME_SNAPSHOT_PERSIST_INTERVAL: Duration = Duration::from_secs(10);
 const MIN_RUNTIME_SAMPLE_INTERVAL: Duration = Duration::from_millis(500);
 const DATABASE_MAINTENANCE_INTERVAL: Duration = Duration::from_secs(6 * 60 * 60);
-const INSTALLABLE_FORMULAE: &[&str] = &[
-    "postgresql@16",
-    "mysql",
-    "redis",
-    "rabbitmq",
-    "kafka",
-    "nginx",
-    "caddy",
-    "memcached",
-    "meilisearch",
-    "minio",
-];
+fn load_formula_catalog(state: &AppState) -> AppResult<Vec<FormulaCatalogItemDto>> {
+    if let Some(items) = state
+        .formula_catalog
+        .lock()
+        .map_err(|_| AppError::StatePoisoned)?
+        .clone()
+    {
+        return Ok(items);
+    }
+    let items = HomebrewProvider::bundled_formula_catalog()?;
+    *state
+        .formula_catalog
+        .lock()
+        .map_err(|_| AppError::StatePoisoned)? = Some(items.clone());
+    Ok(items)
+}
 
-fn validate_installable_formula(formula: &str) -> AppResult<()> {
-    if INSTALLABLE_FORMULAE.contains(&formula) {
+fn load_initial_formula_catalog(path: &std::path::Path) -> AppResult<Vec<FormulaCatalogItemDto>> {
+    match std::fs::read_to_string(path) {
+        Ok(contents) => {
+            serde_json::from_str(&contents).or_else(|_| HomebrewProvider::bundled_formula_catalog())
+        }
+        Err(_) => HomebrewProvider::bundled_formula_catalog(),
+    }
+}
+
+fn refresh_formula_catalog_blocking(state: &AppState) -> AppResult<Vec<FormulaCatalogItemDto>> {
+    let etag_path = state.formula_catalog_path.with_extension("etag");
+    let Some(items) = state.provider.formula_catalog(&etag_path)? else {
+        return load_formula_catalog(state);
+    };
+    let temp_path = state.formula_catalog_path.with_extension("json.tmp");
+    std::fs::write(&temp_path, serde_json::to_vec(&items)?)?;
+    std::fs::rename(temp_path, &state.formula_catalog_path)?;
+    *state
+        .formula_catalog
+        .lock()
+        .map_err(|_| AppError::StatePoisoned)? = Some(items.clone());
+    Ok(items)
+}
+
+fn validate_installable_formula(state: &AppState, formula: &str) -> AppResult<()> {
+    if load_formula_catalog(state)?
+        .iter()
+        .any(|item| item.formula == formula)
+    {
         Ok(())
     } else {
         Err(AppError::Command(format!(
@@ -62,9 +95,26 @@ fn validate_installable_formula(formula: &str) -> AppResult<()> {
 }
 
 #[tauri::command]
+async fn get_formula_catalog(app: AppHandle) -> AppResult<Vec<FormulaCatalogItemDto>> {
+    async_runtime::spawn_blocking(move || load_formula_catalog(&app.state::<AppState>()))
+        .await
+        .map_err(|err| AppError::Command(format!("formula catalog task failed: {err}")))?
+}
+
+#[tauri::command]
+async fn refresh_formula_catalog(app: AppHandle) -> AppResult<Vec<FormulaCatalogItemDto>> {
+    async_runtime::spawn_blocking(move || {
+        refresh_formula_catalog_blocking(&app.state::<AppState>())
+    })
+    .await
+    .map_err(|err| AppError::Command(format!("formula catalog refresh task failed: {err}")))?
+}
+
+#[tauri::command]
 async fn get_formula_statuses(app: AppHandle) -> AppResult<Vec<FormulaStatusDto>> {
     async_runtime::spawn_blocking(move || {
         let state = app.state::<AppState>();
+        let catalog = load_formula_catalog(&state)?;
         // Both commands are read-only and independent. Running them together keeps
         // the first paint bounded by the slower command instead of their sum.
         let outdated_provider = state.provider.clone();
@@ -82,15 +132,16 @@ async fn get_formula_statuses(app: AppHandle) -> AppResult<Vec<FormulaStatusDto>
             .map_err(|_| AppError::Command("Homebrew installed formula task panicked".into()))??
             .into_iter()
             .collect();
-        INSTALLABLE_FORMULAE
+        catalog
             .iter()
-            .map(|formula| {
-                let available_update = outdated.get(*formula);
+            .map(|item| {
+                let formula = item.formula.as_str();
+                let available_update = outdated.get(formula);
                 Ok(FormulaStatusDto {
-                    formula: (*formula).into(),
-                    installed: installed.contains_key(*formula),
+                    formula: formula.into(),
+                    installed: installed.contains_key(formula),
                     version: installed
-                        .get(*formula)
+                        .get(formula)
                         .cloned()
                         .or_else(|| available_update.and_then(|item| item.0.clone())),
                     outdated: available_update.is_some(),
@@ -105,9 +156,9 @@ async fn get_formula_statuses(app: AppHandle) -> AppResult<Vec<FormulaStatusDto>
 
 #[tauri::command]
 async fn upgrade_formula(app: AppHandle, formula: String) -> AppResult<FormulaUpgradeResultDto> {
-    validate_installable_formula(&formula)?;
     async_runtime::spawn_blocking(move || {
         let state = app.state::<AppState>();
+        validate_installable_formula(&state, &formula)?;
         let service = state
             .db
             .lock()
@@ -162,9 +213,9 @@ async fn upgrade_formula(app: AppHandle, formula: String) -> AppResult<FormulaUp
 
 #[tauri::command]
 async fn install_formula(app: AppHandle, formula: String) -> AppResult<FormulaInstallResultDto> {
-    validate_installable_formula(&formula)?;
     async_runtime::spawn_blocking(move || {
         let state = app.state::<AppState>();
+        validate_installable_formula(&state, &formula)?;
         let command = vec![
             "brew".into(),
             "install".into(),
@@ -787,6 +838,8 @@ pub fn run() {
                 .map_err(|err| Box::new(err) as Box<dyn std::error::Error>)?;
             std::fs::create_dir_all(&data_dir)?;
             let db_path = data_dir.join("locers.sqlite3");
+            let formula_catalog_path = data_dir.join("formula-catalog.json");
+            let formula_catalog = load_initial_formula_catalog(&formula_catalog_path)?;
             let mut database = Database::open(db_path.clone())?;
             database.cleanup_expired_data(chrono::Utc::now())?;
             let started_at = chrono::Utc::now();
@@ -797,6 +850,8 @@ pub fn run() {
                 log_session_offsets: Mutex::new(HashMap::new()),
                 runtime_metrics: Mutex::new(RuntimeMetricsState::new()),
                 system_metrics: Mutex::new(sysinfo::System::new_all()),
+                formula_catalog: Mutex::new(Some(formula_catalog)),
+                formula_catalog_path,
                 started_at,
             });
             let app_handle = app.handle().clone();
@@ -819,6 +874,8 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            get_formula_catalog,
+            refresh_formula_catalog,
             get_formula_statuses,
             install_formula,
             upgrade_formula,

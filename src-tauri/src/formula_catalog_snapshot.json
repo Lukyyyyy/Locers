@@ -1,0 +1,2722 @@
+[
+  {
+    "formula": "caddy",
+    "name": "caddy",
+    "description": "Powerful, enterprise-ready, open source web server with automatic HTTPS",
+    "homepage": "https://caddyserver.com/",
+    "version": "2.11.4",
+    "recommended": true
+  },
+  {
+    "formula": "kafka",
+    "name": "kafka",
+    "description": "Open-source distributed event streaming platform",
+    "homepage": "https://kafka.apache.org/",
+    "version": "4.3.1",
+    "recommended": true
+  },
+  {
+    "formula": "meilisearch",
+    "name": "meilisearch",
+    "description": "Ultra relevant, instant and typo-tolerant full-text search API",
+    "homepage": "https://docs.meilisearch.com/",
+    "version": "1.49.0",
+    "recommended": true
+  },
+  {
+    "formula": "memcached",
+    "name": "memcached",
+    "description": "High performance, distributed memory object caching system",
+    "homepage": "https://memcached.org/",
+    "version": "1.6.45",
+    "recommended": true
+  },
+  {
+    "formula": "minio",
+    "name": "minio",
+    "description": "High Performance, Kubernetes Native Object Storage",
+    "homepage": "https://min.io",
+    "version": "2025-10-15T17-29-55Z",
+    "recommended": true
+  },
+  {
+    "formula": "mysql",
+    "name": "mysql",
+    "description": "Open source relational database management system",
+    "homepage": "https://github.com/mysql/mysql-server",
+    "version": "9.7.1",
+    "recommended": true
+  },
+  {
+    "formula": "nginx",
+    "name": "nginx",
+    "description": "HTTP(S) server and reverse proxy, and IMAP/POP3 proxy server",
+    "homepage": "https://nginx.org/",
+    "version": "1.31.2",
+    "recommended": true
+  },
+  {
+    "formula": "postgresql@16",
+    "name": "postgresql@16",
+    "description": "Object-relational database system",
+    "homepage": "https://www.postgresql.org/",
+    "version": "16.14",
+    "recommended": true
+  },
+  {
+    "formula": "rabbitmq",
+    "name": "rabbitmq",
+    "description": "Messaging and streaming broker",
+    "homepage": "https://www.rabbitmq.com",
+    "version": "4.3.2",
+    "recommended": true
+  },
+  {
+    "formula": "redis",
+    "name": "redis",
+    "description": "Persistent key-value database, with built-in net interface",
+    "homepage": "https://redis.io/",
+    "version": "8.8.0",
+    "recommended": true
+  },
+  {
+    "formula": "activemq",
+    "name": "activemq",
+    "description": "Apache ActiveMQ: powerful open source messaging server",
+    "homepage": "https://activemq.apache.org/",
+    "version": "6.2.7",
+    "recommended": false
+  },
+  {
+    "formula": "aliddns",
+    "name": "aliddns",
+    "description": "Aliyun(Alibaba Cloud) ddns for golang",
+    "homepage": "https://github.com/OpenIoTHub/aliddns",
+    "version": "0.0.23",
+    "recommended": false
+  },
+  {
+    "formula": "apache-polaris",
+    "name": "apache-polaris",
+    "description": "Interoperable, open source catalog for Apache Iceberg",
+    "homepage": "https://polaris.apache.org/",
+    "version": "1.3.0",
+    "recommended": false
+  },
+  {
+    "formula": "apache-pulsar",
+    "name": "apache-pulsar",
+    "description": "Cloud-native distributed messaging and streaming platform",
+    "homepage": "https://pulsar.apache.org/",
+    "version": "4.2.3",
+    "recommended": false
+  },
+  {
+    "formula": "apfel",
+    "name": "apfel",
+    "description": "Apple Intelligence from the command-line, with OpenAi-compatible API server",
+    "homepage": "https://apfel.franzai.com",
+    "version": "1.8.3",
+    "recommended": false
+  },
+  {
+    "formula": "appium",
+    "name": "appium",
+    "description": "Automation for Apps",
+    "homepage": "https://appium.io/",
+    "version": "3.5.2",
+    "recommended": false
+  },
+  {
+    "formula": "arcadedb",
+    "name": "arcadedb",
+    "description": "Multi-Model DBMS: Graph, Document, Key/Value, Search, Time Series, Vector",
+    "homepage": "https://arcadedb.com",
+    "version": "26.7.2",
+    "recommended": false
+  },
+  {
+    "formula": "asimov",
+    "name": "asimov",
+    "description": "Automatically exclude development dependencies from Time Machine backups",
+    "homepage": "https://github.com/stevegrunwell/asimov",
+    "version": "0.3.0",
+    "recommended": false
+  },
+  {
+    "formula": "atuin",
+    "name": "atuin",
+    "description": "Improved shell history for zsh, bash, fish and nushell",
+    "homepage": "https://atuin.sh/",
+    "version": "18.17.0",
+    "recommended": false
+  },
+  {
+    "formula": "atuin-server",
+    "name": "atuin-server",
+    "description": "Sync server for atuin - Improved shell history for zsh, bash, fish and nushell",
+    "homepage": "https://atuin.sh",
+    "version": "18.17.0",
+    "recommended": false
+  },
+  {
+    "formula": "auditbeat",
+    "name": "auditbeat",
+    "description": "Lightweight Shipper for Audit Data",
+    "homepage": "https://www.elastic.co/beats/auditbeat",
+    "version": "9.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "autobrr",
+    "name": "autobrr",
+    "description": "Modern, easy to use download automation for torrents and usenet",
+    "homepage": "https://autobrr.com/",
+    "version": "1.81.0",
+    "recommended": false
+  },
+  {
+    "formula": "automysqlbackup",
+    "name": "automysqlbackup",
+    "description": "Automate MySQL backups",
+    "homepage": "https://sourceforge.net/projects/automysqlbackup/",
+    "version": "3.0-rc6",
+    "recommended": false
+  },
+  {
+    "formula": "bacula-fd",
+    "name": "bacula-fd",
+    "description": "Network backup solution",
+    "homepage": "https://www.bacula.org/",
+    "version": "15.0.3",
+    "recommended": false
+  },
+  {
+    "formula": "bareos-client",
+    "name": "bareos-client",
+    "description": "Client for Bareos (Backup Archiving REcovery Open Sourced)",
+    "homepage": "https://www.bareos.com/",
+    "version": "25.0.4",
+    "recommended": false
+  },
+  {
+    "formula": "batt",
+    "name": "batt",
+    "description": "Control and limit battery charging on Apple Silicon MacBooks",
+    "homepage": "https://github.com/charlie0129/batt",
+    "version": "0.7.3",
+    "recommended": false
+  },
+  {
+    "formula": "bazarr",
+    "name": "bazarr",
+    "description": "Companion to Sonarr and Radarr for managing and downloading subtitles",
+    "homepage": "https://www.bazarr.media",
+    "version": "1.6.0",
+    "recommended": false
+  },
+  {
+    "formula": "beanstalkd",
+    "name": "beanstalkd",
+    "description": "Generic work queue originally designed to reduce web latency",
+    "homepage": "https://beanstalkd.github.io/",
+    "version": "1.13",
+    "recommended": false
+  },
+  {
+    "formula": "bind",
+    "name": "bind",
+    "description": "Implementation of the DNS protocols",
+    "homepage": "https://www.isc.org/bind/",
+    "version": "9.20.24",
+    "recommended": false
+  },
+  {
+    "formula": "bitcoin",
+    "name": "bitcoin",
+    "description": "Decentralized, peer to peer payment network",
+    "homepage": "https://bitcoincore.org/",
+    "version": "31.1",
+    "recommended": false
+  },
+  {
+    "formula": "bitlbee",
+    "name": "bitlbee",
+    "description": "IRC to other chat networks gateway",
+    "homepage": "https://www.bitlbee.org/",
+    "version": "3.6",
+    "recommended": false
+  },
+  {
+    "formula": "black",
+    "name": "black",
+    "description": "Python code formatter",
+    "homepage": "https://black.readthedocs.io/en/stable/",
+    "version": "26.5.1",
+    "recommended": false
+  },
+  {
+    "formula": "blocky",
+    "name": "blocky",
+    "description": "Fast and lightweight DNS proxy as ad-blocker for local network",
+    "homepage": "https://0xerr0r.github.io/blocky/",
+    "version": "0.33.0",
+    "recommended": false
+  },
+  {
+    "formula": "bounceback",
+    "name": "bounceback",
+    "description": "Stealth redirector for red team operation security",
+    "homepage": "https://github.com/D00Movenok/BounceBack",
+    "version": "1.5.3",
+    "recommended": false
+  },
+  {
+    "formula": "buildkitd",
+    "name": "buildkitd",
+    "description": "Concurrent, cache-efficient, and Dockerfile-agnostic builder toolkit (Daemon)",
+    "homepage": "https://github.com/moby/buildkit",
+    "version": "0.31.1",
+    "recommended": false
+  },
+  {
+    "formula": "burp",
+    "name": "burp",
+    "description": "Network backup and restore",
+    "homepage": "https://burp.grke.org/",
+    "version": "3.2.0",
+    "recommended": false
+  },
+  {
+    "formula": "burrow",
+    "name": "burrow",
+    "description": "Kafka Consumer Lag Checking",
+    "homepage": "https://github.com/linkedin/Burrow",
+    "version": "1.9.6",
+    "recommended": false
+  },
+  {
+    "formula": "carrot2",
+    "name": "carrot2",
+    "description": "Search results clustering engine",
+    "homepage": "https://search.carrot2.org/",
+    "version": "4.8.6",
+    "recommended": false
+  },
+  {
+    "formula": "cassandra",
+    "name": "cassandra",
+    "description": "Eventually consistent, distributed key-value store",
+    "homepage": "https://cassandra.apache.org",
+    "version": "5.0.8",
+    "recommended": false
+  },
+  {
+    "formula": "cassandra-reaper",
+    "name": "cassandra-reaper",
+    "description": "Management interface for Cassandra",
+    "homepage": "https://cassandra-reaper.io/",
+    "version": "5.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "cayley",
+    "name": "cayley",
+    "description": "Graph database inspired by Freebase and Knowledge Graph",
+    "homepage": "https://cayley.io",
+    "version": "0.7.7",
+    "recommended": false
+  },
+  {
+    "formula": "cc-connect",
+    "name": "cc-connect",
+    "description": "Bridges local AI coding agents to messaging platforms",
+    "homepage": "https://github.com/chenhg5/cc-connect",
+    "version": "1.4.1",
+    "recommended": false
+  },
+  {
+    "formula": "chronograf",
+    "name": "chronograf",
+    "description": "Open source monitoring and visualization UI for the TICK stack",
+    "homepage": "https://docs.influxdata.com/chronograf/latest/",
+    "version": "1.11.4",
+    "recommended": false
+  },
+  {
+    "formula": "clamav",
+    "name": "clamav",
+    "description": "Anti-virus software",
+    "homepage": "https://www.clamav.net/",
+    "version": "1.5.3",
+    "recommended": false
+  },
+  {
+    "formula": "clipper",
+    "name": "clipper",
+    "description": "Share macOS clipboard with tmux and other local and remote apps",
+    "homepage": "https://github.com/wincent/clipper",
+    "version": "3.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "cliproxyapi",
+    "name": "cliproxyapi",
+    "description": "Wrap Gemini CLI, Codex, Claude Code, Qwen Code as an API service",
+    "homepage": "https://github.com/router-for-me/CLIProxyAPI",
+    "version": "7.2.70",
+    "recommended": false
+  },
+  {
+    "formula": "cloudflared",
+    "name": "cloudflared",
+    "description": "Cloudflare Tunnel client (formerly Argo Tunnel)",
+    "homepage": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/",
+    "version": "2026.7.1",
+    "recommended": false
+  },
+  {
+    "formula": "cntlm",
+    "name": "cntlm",
+    "description": "NTLM authentication proxy with tunneling",
+    "homepage": "https://cntlm.sourceforge.net/",
+    "version": "0.92.3",
+    "recommended": false
+  },
+  {
+    "formula": "code-server",
+    "name": "code-server",
+    "description": "Access VS Code through the browser",
+    "homepage": "https://coder.com",
+    "version": "4.112.0",
+    "recommended": false
+  },
+  {
+    "formula": "colima",
+    "name": "colima",
+    "description": "Container runtimes on MacOS (and Linux) with minimal setup",
+    "homepage": "https://colima.run",
+    "version": "0.10.3",
+    "recommended": false
+  },
+  {
+    "formula": "collectd",
+    "name": "collectd",
+    "description": "Statistics collection and monitoring daemon",
+    "homepage": "https://collectd.org/",
+    "version": "5.12.0",
+    "recommended": false
+  },
+  {
+    "formula": "conman",
+    "name": "conman",
+    "description": "Serial console management program supporting a large number of devices",
+    "homepage": "https://github.com/dun/conman",
+    "version": "0.3.1",
+    "recommended": false
+  },
+  {
+    "formula": "container",
+    "name": "container",
+    "description": "Create and run Linux containers using lightweight virtual machines",
+    "homepage": "https://apple.github.io/container/documentation/",
+    "version": "1.1.0",
+    "recommended": false
+  },
+  {
+    "formula": "containerd",
+    "name": "containerd",
+    "description": "Open and reliable container runtime",
+    "homepage": "https://containerd.io",
+    "version": "2.3.3",
+    "recommended": false
+  },
+  {
+    "formula": "coredns",
+    "name": "coredns",
+    "description": "DNS server that chains plugins",
+    "homepage": "https://coredns.io/",
+    "version": "1.14.6",
+    "recommended": false
+  },
+  {
+    "formula": "cortex",
+    "name": "cortex",
+    "description": "Long term storage for Prometheus",
+    "homepage": "https://cortexmetrics.io/",
+    "version": "1.21.1",
+    "recommended": false
+  },
+  {
+    "formula": "coturn",
+    "name": "coturn",
+    "description": "Free open source implementation of TURN and STUN Server",
+    "homepage": "https://github.com/coturn/coturn",
+    "version": "4.14.0",
+    "recommended": false
+  },
+  {
+    "formula": "couchdb",
+    "name": "couchdb",
+    "description": "Apache CouchDB database server",
+    "homepage": "https://couchdb.apache.org/",
+    "version": "3.5.2",
+    "recommended": false
+  },
+  {
+    "formula": "daemontools",
+    "name": "daemontools",
+    "description": "Collection of tools for managing UNIX services",
+    "homepage": "https://cr.yp.to/daemontools.html",
+    "version": "0.76",
+    "recommended": false
+  },
+  {
+    "formula": "dagu",
+    "name": "dagu",
+    "description": "Lightweight and powerful workflow engine",
+    "homepage": "https://dagu.sh",
+    "version": "2.10.7",
+    "recommended": false
+  },
+  {
+    "formula": "davmail",
+    "name": "davmail",
+    "description": "POP/IMAP/SMTP/Caldav/Carddav/LDAP exchange gateway",
+    "homepage": "https://davmail.sourceforge.net/",
+    "version": "6.8.1",
+    "recommended": false
+  },
+  {
+    "formula": "dbus",
+    "name": "dbus",
+    "description": "Message bus system, providing inter-application communication",
+    "homepage": "https://wiki.freedesktop.org/www/Software/dbus",
+    "version": "1.16.2",
+    "recommended": false
+  },
+  {
+    "formula": "ddclient",
+    "name": "ddclient",
+    "description": "Update dynamic DNS entries",
+    "homepage": "https://ddclient.net/",
+    "version": "4.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "derby",
+    "name": "derby",
+    "description": "Apache Derby is an embedded relational database running on JVM",
+    "homepage": "https://db.apache.org/derby/",
+    "version": "10.17.1.0",
+    "recommended": false
+  },
+  {
+    "formula": "dexidp",
+    "name": "dexidp",
+    "description": "OpenID Connect Identity and OAuth 2.0 Provider",
+    "homepage": "https://dexidp.io",
+    "version": "2.45.1",
+    "recommended": false
+  },
+  {
+    "formula": "distcc",
+    "name": "distcc",
+    "description": "Distributed compiler client and server",
+    "homepage": "https://github.com/distcc/distcc/",
+    "version": "3.4",
+    "recommended": false
+  },
+  {
+    "formula": "djl-serving",
+    "name": "djl-serving",
+    "description": "This module contains an universal model serving implementation",
+    "homepage": "https://github.com/deepjavalibrary/djl-serving",
+    "version": "0.36.0",
+    "recommended": false
+  },
+  {
+    "formula": "dnscrypt-proxy",
+    "name": "dnscrypt-proxy",
+    "description": "Secure communications between a client and a DNS resolver",
+    "homepage": "https://dnscrypt.info",
+    "version": "2.1.16",
+    "recommended": false
+  },
+  {
+    "formula": "dnsmasq",
+    "name": "dnsmasq",
+    "description": "Lightweight DNS forwarder and DHCP server",
+    "homepage": "https://thekelleys.org.uk/dnsmasq/doc.html",
+    "version": "2.93",
+    "recommended": false
+  },
+  {
+    "formula": "docker-engine",
+    "name": "docker-engine",
+    "description": "Pack, ship and run any application as a lightweight container (Daemon)",
+    "homepage": "https://www.docker.com/",
+    "version": "29.6.1",
+    "recommended": false
+  },
+  {
+    "formula": "docker-machine",
+    "name": "docker-machine",
+    "description": "Create Docker hosts locally and on cloud providers",
+    "homepage": "https://docs.gitlab.com/runner/executors/docker_machine.html",
+    "version": "0.16.2-gitlab.51",
+    "recommended": false
+  },
+  {
+    "formula": "docuum",
+    "name": "docuum",
+    "description": "Perform least recently used (LRU) eviction of Docker images",
+    "homepage": "https://github.com/stepchowfun/docuum",
+    "version": "0.27.0",
+    "recommended": false
+  },
+  {
+    "formula": "dolt",
+    "name": "dolt",
+    "description": "Git for Data",
+    "homepage": "https://www.dolthub.com",
+    "version": "2.1.10",
+    "recommended": false
+  },
+  {
+    "formula": "dovecot",
+    "name": "dovecot",
+    "description": "IMAP/POP3 server",
+    "homepage": "https://dovecot.org/",
+    "version": "2.4.4",
+    "recommended": false
+  },
+  {
+    "formula": "dura",
+    "name": "dura",
+    "description": "Backs up your work automatically via Git commits",
+    "homepage": "https://github.com/tkellogg/dura",
+    "version": "0.2.0",
+    "recommended": false
+  },
+  {
+    "formula": "ejabberd",
+    "name": "ejabberd",
+    "description": "XMPP application server",
+    "homepage": "https://www.ejabberd.im",
+    "version": "26.04",
+    "recommended": false
+  },
+  {
+    "formula": "emacs",
+    "name": "emacs",
+    "description": "GNU Emacs text editor",
+    "homepage": "https://www.gnu.org/software/emacs/",
+    "version": "30.2",
+    "recommended": false
+  },
+  {
+    "formula": "emqx",
+    "name": "emqx",
+    "description": "MQTT broker for IoT",
+    "homepage": "https://www.emqx.io/",
+    "version": "5.8.8",
+    "recommended": false
+  },
+  {
+    "formula": "eslint_d",
+    "name": "eslint_d",
+    "description": "Speed up eslint to accelerate your development workflow",
+    "homepage": "https://github.com/mantoni/eslint_d.js",
+    "version": "15.0.2",
+    "recommended": false
+  },
+  {
+    "formula": "et",
+    "name": "et",
+    "description": "Remote terminal with IP roaming",
+    "homepage": "https://mistertea.github.io/EternalTerminal/",
+    "version": "7.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "etcd",
+    "name": "etcd",
+    "description": "Key value store for shared configuration and service discovery",
+    "homepage": "https://etcd.io",
+    "version": "3.7.0",
+    "recommended": false
+  },
+  {
+    "formula": "fail2ban",
+    "name": "fail2ban",
+    "description": "Scan log files and ban IPs showing malicious signs",
+    "homepage": "https://www.fail2ban.org/",
+    "version": "1.1.0",
+    "recommended": false
+  },
+  {
+    "formula": "fakecloud",
+    "name": "fakecloud",
+    "description": "Free, open-source local AWS cloud emulator for integration testing",
+    "homepage": "https://fakecloud.dev/",
+    "version": "0.40.1",
+    "recommended": false
+  },
+  {
+    "formula": "fastnetmon",
+    "name": "fastnetmon",
+    "description": "DDoS detection tool with sFlow, Netflow, IPFIX and port mirror support",
+    "homepage": "https://github.com/pavel-odintsov/fastnetmon/",
+    "version": "1.2.9",
+    "recommended": false
+  },
+  {
+    "formula": "filebeat",
+    "name": "filebeat",
+    "description": "File harvester to ship log files to Elasticsearch or Logstash",
+    "homepage": "https://www.elastic.co/products/beats/filebeat",
+    "version": "9.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "flexget",
+    "name": "flexget",
+    "description": "Multipurpose automation tool for content",
+    "homepage": "https://www.flexget.com",
+    "version": "3.19.27",
+    "recommended": false
+  },
+  {
+    "formula": "floresta",
+    "name": "floresta",
+    "description": "Lightweight and embeddable Bitcoin client, built for sovereignty",
+    "homepage": "https://getfloresta.org",
+    "version": "0.9.1",
+    "recommended": false
+  },
+  {
+    "formula": "forgejo",
+    "name": "forgejo",
+    "description": "Self-hosted lightweight software forge",
+    "homepage": "https://forgejo.org/",
+    "version": "15.0.4",
+    "recommended": false
+  },
+  {
+    "formula": "freediameter",
+    "name": "freediameter",
+    "description": "Open source Diameter (Authentication) protocol implementation",
+    "homepage": "https://github.com/freeDiameter/freeDiameter",
+    "version": "1.6.0",
+    "recommended": false
+  },
+  {
+    "formula": "freeswitch",
+    "name": "freeswitch",
+    "description": "Telephony platform to route various communication protocols",
+    "homepage": "https://freeswitch.org",
+    "version": "1.11.1",
+    "recommended": false
+  },
+  {
+    "formula": "frpc",
+    "name": "frpc",
+    "description": "Client app of fast reverse proxy to expose a local server to the internet",
+    "homepage": "https://github.com/fatedier/frp",
+    "version": "0.70.0",
+    "recommended": false
+  },
+  {
+    "formula": "frps",
+    "name": "frps",
+    "description": "Server app of fast reverse proxy to expose a local server to the internet",
+    "homepage": "https://github.com/fatedier/frp",
+    "version": "0.70.0",
+    "recommended": false
+  },
+  {
+    "formula": "fuseki",
+    "name": "fuseki",
+    "description": "SPARQL server",
+    "homepage": "https://jena.apache.org/documentation/fuseki2/",
+    "version": "6.1.0",
+    "recommended": false
+  },
+  {
+    "formula": "garage",
+    "name": "garage",
+    "description": "S3 object store so reliable you can run it outside datacenters",
+    "homepage": "https://garagehq.deuxfleurs.fr/",
+    "version": "2.3.0",
+    "recommended": false
+  },
+  {
+    "formula": "gateway-go",
+    "name": "gateway-go",
+    "description": "GateWay Client for OpenIoTHub",
+    "homepage": "https://github.com/OpenIoTHub",
+    "version": "2.0.12",
+    "recommended": false
+  },
+  {
+    "formula": "gearman",
+    "name": "gearman",
+    "description": "Application framework to farm out work to other machines or processes",
+    "homepage": "https://gearman.org/",
+    "version": "1.1.22",
+    "recommended": false
+  },
+  {
+    "formula": "gensio",
+    "name": "gensio",
+    "description": "Stream I/O Library",
+    "homepage": "https://github.com/cminyard/gensio",
+    "version": "3.0.2",
+    "recommended": false
+  },
+  {
+    "formula": "git-annex",
+    "name": "git-annex",
+    "description": "Manage files with git without checking in file contents",
+    "homepage": "https://git-annex.branchable.com/",
+    "version": "10.20260624",
+    "recommended": false
+  },
+  {
+    "formula": "gitbucket",
+    "name": "gitbucket",
+    "description": "Git platform powered by Scala offering",
+    "homepage": "https://gitbucket.github.io/",
+    "version": "4.46.1",
+    "recommended": false
+  },
+  {
+    "formula": "gitea",
+    "name": "gitea",
+    "description": "Painless self-hosted all-in-one software development service",
+    "homepage": "https://about.gitea.com/",
+    "version": "1.26.4",
+    "recommended": false
+  },
+  {
+    "formula": "gitea-runner",
+    "name": "gitea-runner",
+    "description": "Official Actions runner for Gitea",
+    "homepage": "https://gitea.com/gitea/runner",
+    "version": "2.0.1",
+    "recommended": false
+  },
+  {
+    "formula": "gitlab-runner",
+    "name": "gitlab-runner",
+    "description": "Official GitLab CI runner",
+    "homepage": "https://gitlab.com/gitlab-org/gitlab-runner",
+    "version": "19.1.1",
+    "recommended": false
+  },
+  {
+    "formula": "glider",
+    "name": "glider",
+    "description": "Forward proxy with multiple protocols support",
+    "homepage": "https://github.com/nadoo/glider",
+    "version": "0.16.4",
+    "recommended": false
+  },
+  {
+    "formula": "go-hass-agent",
+    "name": "go-hass-agent",
+    "description": "Native Home Assistant agent for desktop/laptop devices",
+    "homepage": "https://github.com/joshuar/go-hass-agent",
+    "version": "14.14.1",
+    "recommended": false
+  },
+  {
+    "formula": "go-librespot",
+    "name": "go-librespot",
+    "description": "Spotify client",
+    "homepage": "https://github.com/devgianlu/go-librespot",
+    "version": "0.7.4",
+    "recommended": false
+  },
+  {
+    "formula": "goimapnotify",
+    "name": "goimapnotify",
+    "description": "Execute scripts on IMAP mailbox changes using IDLE",
+    "homepage": "https://gitlab.com/shackra/goimapnotify",
+    "version": "2.5.6",
+    "recommended": false
+  },
+  {
+    "formula": "gpsd",
+    "name": "gpsd",
+    "description": "Global Positioning System (GPS) daemon",
+    "homepage": "https://gpsd.gitlab.io/gpsd/",
+    "version": "3.27.5",
+    "recommended": false
+  },
+  {
+    "formula": "grafana",
+    "name": "grafana",
+    "description": "Gorgeous metric visualizations and dashboards for timeseries databases",
+    "homepage": "https://grafana.com",
+    "version": "13.1.0",
+    "recommended": false
+  },
+  {
+    "formula": "grafana-alloy",
+    "name": "grafana-alloy",
+    "description": "OpenTelemetry Collector distribution with programmable pipelines",
+    "homepage": "https://grafana.com/oss/alloy-opentelemetry-collector/",
+    "version": "1.17.1",
+    "recommended": false
+  },
+  {
+    "formula": "gravitino",
+    "name": "gravitino",
+    "description": "High-performance, geo-distributed, and federated metadata lake",
+    "homepage": "https://gravitino.apache.org",
+    "version": "1.3.0",
+    "recommended": false
+  },
+  {
+    "formula": "groestlcoin",
+    "name": "groestlcoin",
+    "description": "Decentralized, peer to peer payment network",
+    "homepage": "https://www.groestlcoin.org/groestlcoin-core-wallet/",
+    "version": "31.0",
+    "recommended": false
+  },
+  {
+    "formula": "h2",
+    "name": "h2",
+    "description": "Java SQL database",
+    "homepage": "https://www.h2database.com/",
+    "version": "2.4.240",
+    "recommended": false
+  },
+  {
+    "formula": "h2o",
+    "name": "h2o",
+    "description": "HTTP server with support for HTTP/1.x and HTTP/2",
+    "homepage": "https://github.com/h2o/h2o/",
+    "version": "2.2.6",
+    "recommended": false
+  },
+  {
+    "formula": "haproxy",
+    "name": "haproxy",
+    "description": "Reliable, high performance TCP/HTTP load balancer",
+    "homepage": "https://www.haproxy.org/",
+    "version": "3.4.2",
+    "recommended": false
+  },
+  {
+    "formula": "haproxy@2.8",
+    "name": "haproxy@2.8",
+    "description": "Reliable, high performance TCP/HTTP load balancer",
+    "homepage": "https://www.haproxy.org/",
+    "version": "2.8.26",
+    "recommended": false
+  },
+  {
+    "formula": "hbase",
+    "name": "hbase",
+    "description": "Hadoop database: a distributed, scalable, big data store",
+    "homepage": "https://hbase.apache.org",
+    "version": "2.6.6",
+    "recommended": false
+  },
+  {
+    "formula": "heartbeat",
+    "name": "heartbeat",
+    "description": "Lightweight Shipper for Uptime Monitoring",
+    "homepage": "https://www.elastic.co/beats/heartbeat",
+    "version": "9.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "herdr",
+    "name": "herdr",
+    "description": "Agent multiplexer that lives in your terminal",
+    "homepage": "https://herdr.dev",
+    "version": "0.7.3",
+    "recommended": false
+  },
+  {
+    "formula": "httpd",
+    "name": "httpd",
+    "description": "Apache HTTP server",
+    "homepage": "https://httpd.apache.org/",
+    "version": "2.4.68",
+    "recommended": false
+  },
+  {
+    "formula": "hysteria",
+    "name": "hysteria",
+    "description": "Feature-packed proxy & relay tool optimized for lossy, unstable connections",
+    "homepage": "https://hysteria.network/",
+    "version": "2.9.3",
+    "recommended": false
+  },
+  {
+    "formula": "i2pd",
+    "name": "i2pd",
+    "description": "Full-featured C++ implementation of I2P client",
+    "homepage": "https://i2pd.website/",
+    "version": "2.60.0",
+    "recommended": false
+  },
+  {
+    "formula": "icecream",
+    "name": "icecream",
+    "description": "Distributed compiler with a central scheduler to share build load",
+    "homepage": "https://en.opensuse.org/Icecream",
+    "version": "1.4",
+    "recommended": false
+  },
+  {
+    "formula": "immudb",
+    "name": "immudb",
+    "description": "Lightweight, high-speed immutable database",
+    "homepage": "https://immudb.io/",
+    "version": "1.11.1",
+    "recommended": false
+  },
+  {
+    "formula": "influxdb",
+    "name": "influxdb",
+    "description": "Time series, events, and metrics database",
+    "homepage": "https://influxdata.com/time-series-platform/influxdb/",
+    "version": "3.10.0",
+    "recommended": false
+  },
+  {
+    "formula": "influxdb@1",
+    "name": "influxdb@1",
+    "description": "Time series, events, and metrics database",
+    "homepage": "https://influxdata.com/time-series-platform/influxdb/",
+    "version": "1.12.4",
+    "recommended": false
+  },
+  {
+    "formula": "influxdb@2",
+    "name": "influxdb@2",
+    "description": "Time series, events, and metrics database",
+    "homepage": "https://influxdata.com/time-series-platform/influxdb/",
+    "version": "2.9.1",
+    "recommended": false
+  },
+  {
+    "formula": "ircd-hybrid",
+    "name": "ircd-hybrid",
+    "description": "High-performance secure IRC server",
+    "homepage": "https://www.ircd-hybrid.org/",
+    "version": "8.2.47",
+    "recommended": false
+  },
+  {
+    "formula": "ironclaw",
+    "name": "ironclaw",
+    "description": "Security-first personal AI assistant with WASM sandbox channels",
+    "homepage": "https://www.ironclaw.com",
+    "version": "0.29.1",
+    "recommended": false
+  },
+  {
+    "formula": "isponsorblocktv",
+    "name": "isponsorblocktv",
+    "description": "SponsorBlock client for all YouTube TV clients",
+    "homepage": "https://github.com/dmunozv04/iSponsorBlockTV",
+    "version": "2.9.0",
+    "recommended": false
+  },
+  {
+    "formula": "isync",
+    "name": "isync",
+    "description": "Synchronize a maildir with an IMAP server",
+    "homepage": "https://isync.sourceforge.io/",
+    "version": "1.5.1",
+    "recommended": false
+  },
+  {
+    "formula": "jack",
+    "name": "jack",
+    "description": "Audio Connection Kit",
+    "homepage": "https://jackaudio.org/",
+    "version": "1.9.22",
+    "recommended": false
+  },
+  {
+    "formula": "jackett",
+    "name": "jackett",
+    "description": "API Support for your favorite torrent trackers",
+    "homepage": "https://github.com/Jackett/Jackett",
+    "version": "0.24.2206",
+    "recommended": false
+  },
+  {
+    "formula": "jenkins",
+    "name": "jenkins",
+    "description": "Extendable open source continuous integration server",
+    "homepage": "https://www.jenkins.io/",
+    "version": "2.572",
+    "recommended": false
+  },
+  {
+    "formula": "jenkins-lts",
+    "name": "jenkins-lts",
+    "description": "Extendable open source continuous integration server",
+    "homepage": "https://www.jenkins.io/",
+    "version": "2.568.1",
+    "recommended": false
+  },
+  {
+    "formula": "jobber",
+    "name": "jobber",
+    "description": "Alternative to cron, with better status-reporting and error-handling",
+    "homepage": "https://dshearer.github.io/jobber/",
+    "version": "1.4.4",
+    "recommended": false
+  },
+  {
+    "formula": "jupyterlab",
+    "name": "jupyterlab",
+    "description": "Interactive environments for writing and running code",
+    "homepage": "https://jupyter.org/",
+    "version": "4.6.1",
+    "recommended": false
+  },
+  {
+    "formula": "kanata",
+    "name": "kanata",
+    "description": "Cross-platform software keyboard remapper for Linux, macOS and Windows",
+    "homepage": "https://github.com/jtroo/kanata",
+    "version": "1.12.0",
+    "recommended": false
+  },
+  {
+    "formula": "kapacitor",
+    "name": "kapacitor",
+    "description": "Open source time series data processor",
+    "homepage": "https://github.com/influxdata/kapacitor",
+    "version": "1.8.6",
+    "recommended": false
+  },
+  {
+    "formula": "kettle",
+    "name": "kettle",
+    "description": "Pentaho Data Integration software",
+    "homepage": "https://pentaho.com/products/pentaho-data-integration",
+    "version": "9.4.0.0-343",
+    "recommended": false
+  },
+  {
+    "formula": "keyd",
+    "name": "keyd",
+    "description": "Key remapping daemon for Linux",
+    "homepage": "https://github.com/rvaiya/keyd",
+    "version": "2.6.0",
+    "recommended": false
+  },
+  {
+    "formula": "knot",
+    "name": "knot",
+    "description": "High-performance authoritative-only DNS server",
+    "homepage": "https://www.knot-dns.cz/",
+    "version": "3.5.5",
+    "recommended": false
+  },
+  {
+    "formula": "knot-resolver",
+    "name": "knot-resolver",
+    "description": "Minimalistic, caching, DNSSEC-validating DNS resolver",
+    "homepage": "https://www.knot-resolver.cz",
+    "version": "6.4.0",
+    "recommended": false
+  },
+  {
+    "formula": "kubo",
+    "name": "kubo",
+    "description": "Peer-to-peer hypermedia protocol",
+    "homepage": "https://docs.ipfs.tech/how-to/command-line-quick-start/",
+    "version": "0.42.0",
+    "recommended": false
+  },
+  {
+    "formula": "languagetool",
+    "name": "languagetool",
+    "description": "Style and grammar checker",
+    "homepage": "https://www.languagetool.org/",
+    "version": "6.8",
+    "recommended": false
+  },
+  {
+    "formula": "launch_socket_server",
+    "name": "launch_socket_server",
+    "description": "Bind to privileged ports without running a server as root",
+    "homepage": "https://github.com/mistydemeo/launch_socket_server",
+    "version": "2.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "lavinmq",
+    "name": "lavinmq",
+    "description": "Message broker implementing the AMQP 0-9-1 and MQTT protocols",
+    "homepage": "https://lavinmq.com",
+    "version": "2.9.1",
+    "recommended": false
+  },
+  {
+    "formula": "libvirt",
+    "name": "libvirt",
+    "description": "C virtualization API",
+    "homepage": "https://libvirt.org/",
+    "version": "12.5.0",
+    "recommended": false
+  },
+  {
+    "formula": "lighttpd",
+    "name": "lighttpd",
+    "description": "Small memory footprint, flexible web-server",
+    "homepage": "https://www.lighttpd.net/",
+    "version": "1.4.85",
+    "recommended": false
+  },
+  {
+    "formula": "lldpd",
+    "name": "lldpd",
+    "description": "Implementation of IEEE 802.1ab (LLDP)",
+    "homepage": "https://lldpd.github.io/",
+    "version": "1.0.21",
+    "recommended": false
+  },
+  {
+    "formula": "logrotate",
+    "name": "logrotate",
+    "description": "Rotates, compresses, and mails system logs",
+    "homepage": "https://github.com/logrotate/logrotate",
+    "version": "3.22.0",
+    "recommended": false
+  },
+  {
+    "formula": "logstash",
+    "name": "logstash",
+    "description": "Tool for managing events and logs",
+    "homepage": "https://www.elastic.co/products/logstash",
+    "version": "9.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "loki",
+    "name": "loki",
+    "description": "Horizontally-scalable, highly-available log aggregation system",
+    "homepage": "https://grafana.com/oss/loki",
+    "version": "3.7.3",
+    "recommended": false
+  },
+  {
+    "formula": "lspmux",
+    "name": "lspmux",
+    "description": "Share one language instance between multiple LSP clients to save resources",
+    "homepage": "https://codeberg.org/p2502/lspmux",
+    "version": "0.3.0",
+    "recommended": false
+  },
+  {
+    "formula": "lume",
+    "name": "lume",
+    "description": "Create and manage Apple Silicon-native virtual machines",
+    "homepage": "https://cua.ai",
+    "version": "0.3.15",
+    "recommended": false
+  },
+  {
+    "formula": "macpine",
+    "name": "macpine",
+    "description": "Lightweight Linux VMs on MacOS",
+    "homepage": "https://beringresearch.github.io/macpine/",
+    "version": "1.1.5",
+    "recommended": false
+  },
+  {
+    "formula": "mactop",
+    "name": "mactop",
+    "description": "Apple Silicon Monitor Top written in Go Lang",
+    "homepage": "https://github.com/metaspartan/mactop",
+    "version": "2.1.5",
+    "recommended": false
+  },
+  {
+    "formula": "mailcatcher",
+    "name": "mailcatcher",
+    "description": "Catches mail and serves it through a dream",
+    "homepage": "https://mailcatcher.me",
+    "version": "0.10.0",
+    "recommended": false
+  },
+  {
+    "formula": "mailpit",
+    "name": "mailpit",
+    "description": "Web and API based SMTP testing",
+    "homepage": "https://mailpit.axllent.org/",
+    "version": "1.30.4",
+    "recommended": false
+  },
+  {
+    "formula": "manticoresearch",
+    "name": "manticoresearch",
+    "description": "Open source text search engine",
+    "homepage": "https://manticoresearch.com",
+    "version": "28.4.4",
+    "recommended": false
+  },
+  {
+    "formula": "mariadb",
+    "name": "mariadb",
+    "description": "Drop-in replacement for MySQL",
+    "homepage": "https://mariadb.org/",
+    "version": "12.3.2",
+    "recommended": false
+  },
+  {
+    "formula": "mariadb@10.11",
+    "name": "mariadb@10.11",
+    "description": "Drop-in replacement for MySQL",
+    "homepage": "https://mariadb.org/",
+    "version": "10.11.18",
+    "recommended": false
+  },
+  {
+    "formula": "mariadb@10.6",
+    "name": "mariadb@10.6",
+    "description": "Drop-in replacement for MySQL",
+    "homepage": "https://mariadb.org/",
+    "version": "10.6.27",
+    "recommended": false
+  },
+  {
+    "formula": "mariadb@11.4",
+    "name": "mariadb@11.4",
+    "description": "Drop-in replacement for MySQL",
+    "homepage": "https://mariadb.org/",
+    "version": "11.4.12",
+    "recommended": false
+  },
+  {
+    "formula": "mariadb@11.8",
+    "name": "mariadb@11.8",
+    "description": "Drop-in replacement for MySQL",
+    "homepage": "https://mariadb.org/",
+    "version": "11.8.8",
+    "recommended": false
+  },
+  {
+    "formula": "mediamtx",
+    "name": "mediamtx",
+    "description": "Zero-dependency real-time media server and media proxy",
+    "homepage": "https://mediamtx.org",
+    "version": "1.19.2",
+    "recommended": false
+  },
+  {
+    "formula": "metabase",
+    "name": "metabase",
+    "description": "Business intelligence report server",
+    "homepage": "https://www.metabase.com/",
+    "version": "0.62.4",
+    "recommended": false
+  },
+  {
+    "formula": "metricbeat",
+    "name": "metricbeat",
+    "description": "Collect metrics from your systems and services",
+    "homepage": "https://www.elastic.co/beats/metricbeat",
+    "version": "9.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "mihomo",
+    "name": "mihomo",
+    "description": "Another rule-based tunnel in Go, formerly known as ClashMeta",
+    "homepage": "https://wiki.metacubex.one",
+    "version": "1.19.28",
+    "recommended": false
+  },
+  {
+    "formula": "minidlna",
+    "name": "minidlna",
+    "description": "Media server software, compliant with DLNA/UPnP-AV clients",
+    "homepage": "https://sourceforge.net/projects/minidlna/",
+    "version": "1.3.3",
+    "recommended": false
+  },
+  {
+    "formula": "miniflux",
+    "name": "miniflux",
+    "description": "Minimalist and opinionated feed reader",
+    "homepage": "https://miniflux.app",
+    "version": "2.3.2",
+    "recommended": false
+  },
+  {
+    "formula": "mlx-lm",
+    "name": "mlx-lm",
+    "description": "Run LLMs with MLX",
+    "homepage": "https://github.com/ml-explore/mlx-lm",
+    "version": "0.31.3",
+    "recommended": false
+  },
+  {
+    "formula": "monero",
+    "name": "monero",
+    "description": "Official Monero wallet and CPU miner",
+    "homepage": "https://www.getmonero.org/downloads/#cli",
+    "version": "0.18.5.1",
+    "recommended": false
+  },
+  {
+    "formula": "mongo-orchestration",
+    "name": "mongo-orchestration",
+    "description": "REST API to manage MongoDB configurations on a single host",
+    "homepage": "https://github.com/mongodb-labs/mongo-orchestration",
+    "version": "0.11.2",
+    "recommended": false
+  },
+  {
+    "formula": "monit",
+    "name": "monit",
+    "description": "Manage and monitor processes, files, directories, and devices",
+    "homepage": "https://mmonit.com/monit/",
+    "version": "6.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "mosquitto",
+    "name": "mosquitto",
+    "description": "Message broker implementing the MQTT protocol",
+    "homepage": "https://mosquitto.org/",
+    "version": "2.1.2",
+    "recommended": false
+  },
+  {
+    "formula": "moto",
+    "name": "moto",
+    "description": "Mock AWS services",
+    "homepage": "http://getmoto.org/",
+    "version": "5.2.2",
+    "recommended": false
+  },
+  {
+    "formula": "mpd",
+    "name": "mpd",
+    "description": "Music Player Daemon",
+    "homepage": "https://www.musicpd.org/",
+    "version": "0.24.13",
+    "recommended": false
+  },
+  {
+    "formula": "mpdas",
+    "name": "mpdas",
+    "description": "C++ client to submit tracks to audioscrobbler",
+    "homepage": "https://www.50hz.ws/mpdas/",
+    "version": "0.4.5",
+    "recommended": false
+  },
+  {
+    "formula": "mpdscribble",
+    "name": "mpdscribble",
+    "description": "Last.fm reporting client for mpd",
+    "homepage": "https://www.musicpd.org/clients/mpdscribble/",
+    "version": "0.26",
+    "recommended": false
+  },
+  {
+    "formula": "mycorrhiza",
+    "name": "mycorrhiza",
+    "description": "Lightweight wiki engine with hierarchy support",
+    "homepage": "https://mycorrhiza.wiki",
+    "version": "1.15.1",
+    "recommended": false
+  },
+  {
+    "formula": "mysql@8.0",
+    "name": "mysql@8.0",
+    "description": "Open source relational database management system",
+    "homepage": "https://github.com/mysql/mysql-server",
+    "version": "8.0.46",
+    "recommended": false
+  },
+  {
+    "formula": "mysql@8.4",
+    "name": "mysql@8.4",
+    "description": "Open source relational database management system",
+    "homepage": "https://github.com/mysql/mysql-server",
+    "version": "8.4.10",
+    "recommended": false
+  },
+  {
+    "formula": "nagios",
+    "name": "nagios",
+    "description": "Network monitoring and management system",
+    "homepage": "https://www.nagios.org/",
+    "version": "4.5.13",
+    "recommended": false
+  },
+  {
+    "formula": "nats-server",
+    "name": "nats-server",
+    "description": "Lightweight cloud messaging system",
+    "homepage": "https://nats.io",
+    "version": "2.14.3",
+    "recommended": false
+  },
+  {
+    "formula": "nats-streaming-server",
+    "name": "nats-streaming-server",
+    "description": "Lightweight cloud messaging system",
+    "homepage": "https://nats.io",
+    "version": "0.25.6",
+    "recommended": false
+  },
+  {
+    "formula": "nebula",
+    "name": "nebula",
+    "description": "Scalable overlay networking tool for connecting computers anywhere",
+    "homepage": "https://github.com/slackhq/nebula",
+    "version": "1.10.3",
+    "recommended": false
+  },
+  {
+    "formula": "neo4j",
+    "name": "neo4j",
+    "description": "Robust (fully ACID) transactional property graph database",
+    "homepage": "https://neo4j.com/",
+    "version": "2026.06.0",
+    "recommended": false
+  },
+  {
+    "formula": "nessie",
+    "name": "nessie",
+    "description": "Transactional Catalog for Data Lakes with Git-like semantics",
+    "homepage": "https://projectnessie.org",
+    "version": "0.108.1",
+    "recommended": false
+  },
+  {
+    "formula": "netatalk",
+    "name": "netatalk",
+    "description": "File server for Macs, compliant with Apple Filing Protocol (AFP)",
+    "homepage": "https://netatalk.io",
+    "version": "4.5.0",
+    "recommended": false
+  },
+  {
+    "formula": "netdata",
+    "name": "netdata",
+    "description": "Diagnose infrastructure problems with metrics, visualizations & alarms",
+    "homepage": "https://www.netdata.cloud/",
+    "version": "2.10.3",
+    "recommended": false
+  },
+  {
+    "formula": "newrelic-infra-agent",
+    "name": "newrelic-infra-agent",
+    "description": "New Relic infrastructure agent",
+    "homepage": "https://github.com/newrelic/infrastructure-agent",
+    "version": "1.77.1",
+    "recommended": false
+  },
+  {
+    "formula": "nexus",
+    "name": "nexus",
+    "description": "Repository manager for binary software components",
+    "homepage": "https://www.sonatype.com/",
+    "version": "3.93.2-01",
+    "recommended": false
+  },
+  {
+    "formula": "node-red",
+    "name": "node-red",
+    "description": "Low-code programming for event-driven applications",
+    "homepage": "https://nodered.org/",
+    "version": "5.0.1",
+    "recommended": false
+  },
+  {
+    "formula": "node_exporter",
+    "name": "node_exporter",
+    "description": "Prometheus exporter for machine metrics",
+    "homepage": "https://prometheus.io/",
+    "version": "1.12.0",
+    "recommended": false
+  },
+  {
+    "formula": "nrpe",
+    "name": "nrpe",
+    "description": "Nagios remote plugin executor",
+    "homepage": "https://www.nagios.org/",
+    "version": "4.1.3",
+    "recommended": false
+  },
+  {
+    "formula": "nsq",
+    "name": "nsq",
+    "description": "Realtime distributed messaging platform",
+    "homepage": "https://nsq.io/",
+    "version": "1.3.0",
+    "recommended": false
+  },
+  {
+    "formula": "nullclaw",
+    "name": "nullclaw",
+    "description": "Tiny autonomous AI assistant infrastructure written in Zig",
+    "homepage": "https://nullclaw.io",
+    "version": "2026.5.29",
+    "recommended": false
+  },
+  {
+    "formula": "nut",
+    "name": "nut",
+    "description": "Network UPS Tools: Support for various power devices",
+    "homepage": "https://networkupstools.org/",
+    "version": "2.8.5",
+    "recommended": false
+  },
+  {
+    "formula": "nzbget",
+    "name": "nzbget",
+    "description": "Binary newsgrabber for nzb files",
+    "homepage": "https://nzbget.com",
+    "version": "26.2",
+    "recommended": false
+  },
+  {
+    "formula": "oauth2_proxy",
+    "name": "oauth2_proxy",
+    "description": "Reverse proxy for authenticating users via OAuth 2 providers",
+    "homepage": "https://oauth2-proxy.github.io/oauth2-proxy/",
+    "version": "7.15.3",
+    "recommended": false
+  },
+  {
+    "formula": "offlineimap",
+    "name": "offlineimap",
+    "description": "Synchronizes emails between two repositories",
+    "homepage": "https://github.com/OfflineIMAP/offlineimap3",
+    "version": "8.0.3",
+    "recommended": false
+  },
+  {
+    "formula": "ola",
+    "name": "ola",
+    "description": "Open Lighting Architecture for lighting control information",
+    "homepage": "https://www.openlighting.org/ola/",
+    "version": "0.10.9",
+    "recommended": false
+  },
+  {
+    "formula": "ollama",
+    "name": "ollama",
+    "description": "Create, run, and share large language models (LLMs)",
+    "homepage": "https://ollama.com/",
+    "version": "0.31.1",
+    "recommended": false
+  },
+  {
+    "formula": "onedrive-cli",
+    "name": "onedrive-cli",
+    "description": "Folder synchronization with OneDrive",
+    "homepage": "https://abraunegg.github.io",
+    "version": "2.5.11",
+    "recommended": false
+  },
+  {
+    "formula": "openbao",
+    "name": "openbao",
+    "description": "Provides a software solution to manage, store, and distribute sensitive data",
+    "homepage": "https://openbao.org/",
+    "version": "2.5.5",
+    "recommended": false
+  },
+  {
+    "formula": "openfortivpn",
+    "name": "openfortivpn",
+    "description": "Open Fortinet client for PPP+TLS VPN tunnel services",
+    "homepage": "https://github.com/adrienverge/openfortivpn",
+    "version": "1.24.1",
+    "recommended": false
+  },
+  {
+    "formula": "openiked",
+    "name": "openiked",
+    "description": "IKEv2 daemon - portable version of OpenBSD iked",
+    "homepage": "https://openiked.org",
+    "version": "7.4",
+    "recommended": false
+  },
+  {
+    "formula": "openiothub-server",
+    "name": "openiothub-server",
+    "description": "Server for OpenIoTHub",
+    "homepage": "https://github.com/OpenIoTHub/server-go",
+    "version": "1.2.25",
+    "recommended": false
+  },
+  {
+    "formula": "opensearch",
+    "name": "opensearch",
+    "description": "Open source distributed and RESTful search engine",
+    "homepage": "https://github.com/opensearch-project/OpenSearch",
+    "version": "3.7.0",
+    "recommended": false
+  },
+  {
+    "formula": "opensearch-dashboards",
+    "name": "opensearch-dashboards",
+    "description": "Open source visualization dashboards for OpenSearch",
+    "homepage": "https://docs.opensearch.org/latest/dashboards/",
+    "version": "3.7.0",
+    "recommended": false
+  },
+  {
+    "formula": "opentsdb",
+    "name": "opentsdb",
+    "description": "Scalable, distributed Time Series Database",
+    "homepage": "http://opentsdb.net/",
+    "version": "2.4.1",
+    "recommended": false
+  },
+  {
+    "formula": "openvpn",
+    "name": "openvpn",
+    "description": "SSL/TLS VPN implementing OSI layer 2 or 3 secure network extension",
+    "homepage": "https://openvpn.net/community/",
+    "version": "2.7.5",
+    "recommended": false
+  },
+  {
+    "formula": "orientdb",
+    "name": "orientdb",
+    "description": "Graph database",
+    "homepage": "https://orientdb.dev",
+    "version": "3.2.53",
+    "recommended": false
+  },
+  {
+    "formula": "packetbeat",
+    "name": "packetbeat",
+    "description": "Lightweight Shipper for Network Data",
+    "homepage": "https://www.elastic.co/products/beats/packetbeat",
+    "version": "9.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "payara",
+    "name": "payara",
+    "description": "Java EE application server forked from GlassFish",
+    "homepage": "https://www.payara.fish",
+    "version": "7.2026.6",
+    "recommended": false
+  },
+  {
+    "formula": "pdns",
+    "name": "pdns",
+    "description": "Authoritative nameserver",
+    "homepage": "https://www.powerdns.com",
+    "version": "5.1.3",
+    "recommended": false
+  },
+  {
+    "formula": "percona-server",
+    "name": "percona-server",
+    "description": "Drop-in MySQL replacement",
+    "homepage": "https://www.percona.com",
+    "version": "8.4.10-10",
+    "recommended": false
+  },
+  {
+    "formula": "percona-server@8.0",
+    "name": "percona-server@8.0",
+    "description": "Drop-in MySQL replacement",
+    "homepage": "https://www.percona.com",
+    "version": "8.0.46-37",
+    "recommended": false
+  },
+  {
+    "formula": "pgbouncer",
+    "name": "pgbouncer",
+    "description": "Lightweight connection pooler for PostgreSQL",
+    "homepage": "https://www.pgbouncer.org/",
+    "version": "1.25.2",
+    "recommended": false
+  },
+  {
+    "formula": "pgpool-ii",
+    "name": "pgpool-ii",
+    "description": "PostgreSQL connection pool server",
+    "homepage": "https://www.pgpool.net/mediawiki/index.php/Main_Page",
+    "version": "4.7.2",
+    "recommended": false
+  },
+  {
+    "formula": "php",
+    "name": "php",
+    "description": "General-purpose scripting language",
+    "homepage": "https://www.php.net/",
+    "version": "8.5.8",
+    "recommended": false
+  },
+  {
+    "formula": "php@8.1",
+    "name": "php@8.1",
+    "description": "General-purpose scripting language",
+    "homepage": "https://www.php.net/",
+    "version": "8.1.34",
+    "recommended": false
+  },
+  {
+    "formula": "php@8.2",
+    "name": "php@8.2",
+    "description": "General-purpose scripting language",
+    "homepage": "https://www.php.net/",
+    "version": "8.2.32",
+    "recommended": false
+  },
+  {
+    "formula": "php@8.3",
+    "name": "php@8.3",
+    "description": "General-purpose scripting language",
+    "homepage": "https://www.php.net/",
+    "version": "8.3.32",
+    "recommended": false
+  },
+  {
+    "formula": "php@8.4",
+    "name": "php@8.4",
+    "description": "General-purpose scripting language",
+    "homepage": "https://www.php.net/",
+    "version": "8.4.23",
+    "recommended": false
+  },
+  {
+    "formula": "picoclaw",
+    "name": "picoclaw",
+    "description": "Ultra-efficient personal AI assistant in Go",
+    "homepage": "https://picoclaw.io/",
+    "version": "0.3.1",
+    "recommended": false
+  },
+  {
+    "formula": "piknik",
+    "name": "piknik",
+    "description": "Copy/paste anything over the network",
+    "homepage": "https://github.com/jedisct1/piknik",
+    "version": "0.10.2",
+    "recommended": false
+  },
+  {
+    "formula": "pinot",
+    "name": "pinot",
+    "description": "Realtime distributed OLAP datastore",
+    "homepage": "https://pinot.apache.org/",
+    "version": "1.5.1",
+    "recommended": false
+  },
+  {
+    "formula": "pocket-id",
+    "name": "pocket-id",
+    "description": "Open-source identity provider for secure user authentication",
+    "homepage": "https://pocket-id.org",
+    "version": "2.10.0",
+    "recommended": false
+  },
+  {
+    "formula": "podman",
+    "name": "podman",
+    "description": "Tool for managing OCI containers and pods",
+    "homepage": "https://podman.io/",
+    "version": "6.0.1",
+    "recommended": false
+  },
+  {
+    "formula": "pomerium",
+    "name": "pomerium",
+    "description": "Identity and context-aware access proxy",
+    "homepage": "https://www.pomerium.com",
+    "version": "0.32.9",
+    "recommended": false
+  },
+  {
+    "formula": "postgresql@14",
+    "name": "postgresql@14",
+    "description": "Object-relational database system",
+    "homepage": "https://www.postgresql.org/",
+    "version": "14.23",
+    "recommended": false
+  },
+  {
+    "formula": "postgresql@15",
+    "name": "postgresql@15",
+    "description": "Object-relational database system",
+    "homepage": "https://www.postgresql.org/",
+    "version": "15.18",
+    "recommended": false
+  },
+  {
+    "formula": "postgresql@17",
+    "name": "postgresql@17",
+    "description": "Object-relational database system",
+    "homepage": "https://www.postgresql.org/",
+    "version": "17.10",
+    "recommended": false
+  },
+  {
+    "formula": "postgresql@18",
+    "name": "postgresql@18",
+    "description": "Object-relational database system",
+    "homepage": "https://www.postgresql.org/",
+    "version": "18.4",
+    "recommended": false
+  },
+  {
+    "formula": "prestodb",
+    "name": "prestodb",
+    "description": "Distributed SQL query engine for big data",
+    "homepage": "https://prestodb.io",
+    "version": "0.298.1",
+    "recommended": false
+  },
+  {
+    "formula": "privoxy",
+    "name": "privoxy",
+    "description": "Advanced filtering web proxy",
+    "homepage": "https://www.privoxy.org/",
+    "version": "4.2.0",
+    "recommended": false
+  },
+  {
+    "formula": "proftpd",
+    "name": "proftpd",
+    "description": "Highly configurable GPL-licensed FTP server software",
+    "homepage": "http://www.proftpd.org/",
+    "version": "1.3.9c",
+    "recommended": false
+  },
+  {
+    "formula": "prometheus",
+    "name": "prometheus",
+    "description": "Service monitoring system and time series database",
+    "homepage": "https://prometheus.io/",
+    "version": "3.13.1",
+    "recommended": false
+  },
+  {
+    "formula": "pueue",
+    "name": "pueue",
+    "description": "Command-line tool for managing long-running shell commands",
+    "homepage": "https://github.com/Nukesor/pueue",
+    "version": "4.0.4",
+    "recommended": false
+  },
+  {
+    "formula": "pulseaudio",
+    "name": "pulseaudio",
+    "description": "Sound system for POSIX OSes",
+    "homepage": "https://wiki.freedesktop.org/www/Software/PulseAudio/",
+    "version": "17.0",
+    "recommended": false
+  },
+  {
+    "formula": "pure-ftpd",
+    "name": "pure-ftpd",
+    "description": "Secure and efficient FTP server",
+    "homepage": "https://www.pureftpd.org/",
+    "version": "1.0.54",
+    "recommended": false
+  },
+  {
+    "formula": "questdb",
+    "name": "questdb",
+    "description": "Time Series Database",
+    "homepage": "https://questdb.io",
+    "version": "9.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "rancher-machine",
+    "name": "rancher-machine",
+    "description": "Machine management for a container-centric world",
+    "homepage": "https://github.com/rancher/machine",
+    "version": "0.15.0-rancher145",
+    "recommended": false
+  },
+  {
+    "formula": "rathole",
+    "name": "rathole",
+    "description": "Reverse proxy for NAT traversal",
+    "homepage": "https://github.com/rathole-org/rathole",
+    "version": "0.5.0",
+    "recommended": false
+  },
+  {
+    "formula": "recc",
+    "name": "recc",
+    "description": "Remote Execution Caching Compiler",
+    "homepage": "https://buildgrid.gitlab.io/recc",
+    "version": "1.4.13",
+    "recommended": false
+  },
+  {
+    "formula": "redict",
+    "name": "redict",
+    "description": "Distributed key/value database",
+    "homepage": "https://redict.io/",
+    "version": "7.3.6",
+    "recommended": false
+  },
+  {
+    "formula": "redis@8.2",
+    "name": "redis@8.2",
+    "description": "Persistent key-value database, with built-in net interface",
+    "homepage": "https://redis.io/",
+    "version": "8.2.7",
+    "recommended": false
+  },
+  {
+    "formula": "redshift",
+    "name": "redshift",
+    "description": "Adjust color temperature of your screen according to your surroundings",
+    "homepage": "https://github.com/sharpbracket/redshift",
+    "version": "1.12",
+    "recommended": false
+  },
+  {
+    "formula": "riemann",
+    "name": "riemann",
+    "description": "Event stream processor",
+    "homepage": "https://riemann.io/",
+    "version": "0.3.12",
+    "recommended": false
+  },
+  {
+    "formula": "rinetd",
+    "name": "rinetd",
+    "description": "Internet TCP redirection server",
+    "homepage": "https://github.com/samhocevar/rinetd",
+    "version": "0.73",
+    "recommended": false
+  },
+  {
+    "formula": "rsyslog",
+    "name": "rsyslog",
+    "description": "Enhanced, multi-threaded syslogd",
+    "homepage": "https://www.rsyslog.com/",
+    "version": "8.2606.0",
+    "recommended": false
+  },
+  {
+    "formula": "rtags",
+    "name": "rtags",
+    "description": "Source code cross-referencer like ctags with a clang frontend",
+    "homepage": "https://github.com/Andersbakken/rtags",
+    "version": "2.44",
+    "recommended": false
+  },
+  {
+    "formula": "runit",
+    "name": "runit",
+    "description": "Collection of tools for managing UNIX services",
+    "homepage": "https://smarden.org/runit/",
+    "version": "2.3.1",
+    "recommended": false
+  },
+  {
+    "formula": "scm-manager",
+    "name": "scm-manager",
+    "description": "Manage Git, Mercurial, and Subversion repos over HTTP",
+    "homepage": "https://www.scm-manager.org",
+    "version": "3.11.10",
+    "recommended": false
+  },
+  {
+    "formula": "sdns",
+    "name": "sdns",
+    "description": "Privacy important, fast, recursive dns resolver server with dnssec support",
+    "homepage": "https://sdns.dev/",
+    "version": "1.7.2",
+    "recommended": false
+  },
+  {
+    "formula": "seaweedfs",
+    "name": "seaweedfs",
+    "description": "Fast distributed storage system",
+    "homepage": "https://seaweedfs.com",
+    "version": "4.39",
+    "recommended": false
+  },
+  {
+    "formula": "selenium-server",
+    "name": "selenium-server",
+    "description": "Browser automation for testing purposes",
+    "homepage": "https://www.selenium.dev/",
+    "version": "4.46.0",
+    "recommended": false
+  },
+  {
+    "formula": "ser2net",
+    "name": "ser2net",
+    "description": "Allow network connections to serial ports",
+    "homepage": "https://ser2net.sourceforge.net/",
+    "version": "4.6.7",
+    "recommended": false
+  },
+  {
+    "formula": "serialosc",
+    "name": "serialosc",
+    "description": "Opensound control server for monome devices",
+    "homepage": "https://github.com/monome/docs/blob/gh-pages/serialosc/osc.md",
+    "version": "1.4.7",
+    "recommended": false
+  },
+  {
+    "formula": "sftpgo",
+    "name": "sftpgo",
+    "description": "Fully featured SFTP server with optional HTTP/S, FTP/S and WebDAV support",
+    "homepage": "https://sftpgo.com/",
+    "version": "2.7.4",
+    "recommended": false
+  },
+  {
+    "formula": "shadowsocks-libev",
+    "name": "shadowsocks-libev",
+    "description": "Libev port of shadowsocks",
+    "homepage": "https://github.com/shadowsocks/shadowsocks-libev",
+    "version": "3.3.6",
+    "recommended": false
+  },
+  {
+    "formula": "shairport-sync",
+    "name": "shairport-sync",
+    "description": "AirTunes emulator that adds multi-room capability",
+    "homepage": "https://github.com/mikebrady/shairport-sync",
+    "version": "5.1",
+    "recommended": false
+  },
+  {
+    "formula": "shibboleth-sp",
+    "name": "shibboleth-sp",
+    "description": "Shibboleth 2 Service Provider daemon",
+    "homepage": "https://wiki.shibboleth.net/confluence/display/SHIB2",
+    "version": "3.5.2",
+    "recommended": false
+  },
+  {
+    "formula": "shimmy",
+    "name": "shimmy",
+    "description": "Small local inference server with OpenAI-compatible GGUF endpoints",
+    "homepage": "https://github.com/Michael-A-Kuykendall/shimmy",
+    "version": "2.2.0",
+    "recommended": false
+  },
+  {
+    "formula": "sickchill",
+    "name": "sickchill",
+    "description": "Automatic Video Library Manager for TV Shows",
+    "homepage": "https://sickchill.github.io",
+    "version": "2024.3.1",
+    "recommended": false
+  },
+  {
+    "formula": "sing-box",
+    "name": "sing-box",
+    "description": "Universal proxy platform",
+    "homepage": "https://sing-box.sagernet.org",
+    "version": "1.13.14",
+    "recommended": false
+  },
+  {
+    "formula": "sleepwatcher",
+    "name": "sleepwatcher",
+    "description": "Monitors sleep, wakeup, and idleness of a Mac",
+    "homepage": "https://www.bernhard-baehr.de/",
+    "version": "2.2.1",
+    "recommended": false
+  },
+  {
+    "formula": "smartdns",
+    "name": "smartdns",
+    "description": "Rule-based DNS server for fast IP resolution, DoT/DoQ/DoH/DoH3 supported",
+    "homepage": "https://github.com/mokeyish/smartdns-rs",
+    "version": "0.13.1",
+    "recommended": false
+  },
+  {
+    "formula": "socket_vmnet",
+    "name": "socket_vmnet",
+    "description": "Daemon to provide vmnet.framework support for rootless QEMU",
+    "homepage": "https://github.com/lima-vm/socket_vmnet",
+    "version": "1.2.2",
+    "recommended": false
+  },
+  {
+    "formula": "socktainer",
+    "name": "socktainer",
+    "description": "Docker-compatible REST API on top of Apple container",
+    "homepage": "https://socktainer.github.io",
+    "version": "1.1.0",
+    "recommended": false
+  },
+  {
+    "formula": "solr",
+    "name": "solr",
+    "description": "Enterprise search platform from the Apache Lucene project",
+    "homepage": "https://solr.apache.org/",
+    "version": "10.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "solr@8.11",
+    "name": "solr@8.11",
+    "description": "Enterprise search platform from the Apache Lucene project",
+    "homepage": "https://solr.apache.org/",
+    "version": "8.11.4",
+    "recommended": false
+  },
+  {
+    "formula": "sonic",
+    "name": "sonic",
+    "description": "Fast, lightweight & schema-less search backend",
+    "homepage": "https://github.com/valeriansaliou/sonic",
+    "version": "1.7.4",
+    "recommended": false
+  },
+  {
+    "formula": "spoof-mac",
+    "name": "spoof-mac",
+    "description": "Spoof your MAC address in macOS",
+    "homepage": "https://feross.org/spoofmac/",
+    "version": "2.1.1",
+    "recommended": false
+  },
+  {
+    "formula": "spoofdpi",
+    "name": "spoofdpi",
+    "description": "Simple and fast anti-censorship tool written in Go",
+    "homepage": "https://spoofdpi.dev",
+    "version": "1.5.3",
+    "recommended": false
+  },
+  {
+    "formula": "spotifyd",
+    "name": "spotifyd",
+    "description": "Spotify daemon",
+    "homepage": "https://spotifyd.rs/",
+    "version": "0.4.2",
+    "recommended": false
+  },
+  {
+    "formula": "squid",
+    "name": "squid",
+    "description": "Advanced proxy caching server for HTTP, HTTPS, FTP, and Gopher",
+    "homepage": "https://www.squid-cache.org/",
+    "version": "7.6",
+    "recommended": false
+  },
+  {
+    "formula": "ssdb",
+    "name": "ssdb",
+    "description": "NoSQL database supporting many data structures: Redis alternative",
+    "homepage": "https://ssdb.io/",
+    "version": "1.9.9",
+    "recommended": false
+  },
+  {
+    "formula": "sshguard",
+    "name": "sshguard",
+    "description": "Protect from brute force attacks against SSH",
+    "homepage": "https://www.sshguard.net/",
+    "version": "2.5.1",
+    "recommended": false
+  },
+  {
+    "formula": "stripe-mock",
+    "name": "stripe-mock",
+    "description": "Mock HTTP server that responds like the real Stripe API",
+    "homepage": "https://github.com/stripe/stripe-mock",
+    "version": "0.201.0",
+    "recommended": false
+  },
+  {
+    "formula": "stubby",
+    "name": "stubby",
+    "description": "DNS privacy enabled stub resolver service based on getdns",
+    "homepage": "https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Daemon+-+Stubby",
+    "version": "0.4.3",
+    "recommended": false
+  },
+  {
+    "formula": "stunnel",
+    "name": "stunnel",
+    "description": "SSL tunneling program",
+    "homepage": "https://www.stunnel.org/",
+    "version": "5.79",
+    "recommended": false
+  },
+  {
+    "formula": "supervisor",
+    "name": "supervisor",
+    "description": "Process Control System",
+    "homepage": "https://supervisord.org/",
+    "version": "4.3.0",
+    "recommended": false
+  },
+  {
+    "formula": "symfony-cli",
+    "name": "symfony-cli",
+    "description": "Build, run, and manage Symfony applications",
+    "homepage": "https://symfony.com/download",
+    "version": "5.18.0",
+    "recommended": false
+  },
+  {
+    "formula": "syncthing",
+    "name": "syncthing",
+    "description": "Open source continuous file synchronization application",
+    "homepage": "https://syncthing.net/",
+    "version": "2.1.2",
+    "recommended": false
+  },
+  {
+    "formula": "synergy-core",
+    "name": "synergy-core",
+    "description": "Synergy, the keyboard and mouse sharing tool",
+    "homepage": "https://symless.com/synergy",
+    "version": "1.20.4",
+    "recommended": false
+  },
+  {
+    "formula": "tailscale",
+    "name": "tailscale",
+    "description": "Easiest, most secure way to use WireGuard and 2FA",
+    "homepage": "https://tailscale.com",
+    "version": "1.98.8",
+    "recommended": false
+  },
+  {
+    "formula": "technitium-dns",
+    "name": "technitium-dns",
+    "description": "Self host a DNS server for privacy & security",
+    "homepage": "https://technitium.com/dns/",
+    "version": "15.4.0",
+    "recommended": false
+  },
+  {
+    "formula": "telegraf",
+    "name": "telegraf",
+    "description": "Plugin-driven server agent for collecting & reporting metrics",
+    "homepage": "https://www.influxdata.com/time-series-platform/telegraf/",
+    "version": "1.39.1",
+    "recommended": false
+  },
+  {
+    "formula": "temporal",
+    "name": "temporal",
+    "description": "Command-line interface for running and interacting with Temporal Server and UI",
+    "homepage": "https://temporal.io/",
+    "version": "1.8.0",
+    "recommended": false
+  },
+  {
+    "formula": "teslamate",
+    "name": "teslamate",
+    "description": "Self-hosted data logger for your Tesla",
+    "homepage": "https://docs.teslamate.org",
+    "version": "4.0.1",
+    "recommended": false
+  },
+  {
+    "formula": "tika",
+    "name": "tika",
+    "description": "Content analysis toolkit",
+    "homepage": "https://tika.apache.org/",
+    "version": "3.3.1",
+    "recommended": false
+  },
+  {
+    "formula": "tile38",
+    "name": "tile38",
+    "description": "In-memory geolocation data store, spatial index, and realtime geofence",
+    "homepage": "https://tile38.com/",
+    "version": "1.38.0",
+    "recommended": false
+  },
+  {
+    "formula": "tinc",
+    "name": "tinc",
+    "description": "Virtual Private Network (VPN) tool",
+    "homepage": "https://www.tinc-vpn.org/",
+    "version": "1.0.37",
+    "recommended": false
+  },
+  {
+    "formula": "tinyice",
+    "name": "tinyice",
+    "description": "Modern, all-in-one Icecast-compatible audio/video streaming server",
+    "homepage": "https://datanoisetv.github.io/tinyice/",
+    "version": "2.6.3",
+    "recommended": false
+  },
+  {
+    "formula": "tinyproxy",
+    "name": "tinyproxy",
+    "description": "HTTP/HTTPS proxy for POSIX systems",
+    "homepage": "https://tinyproxy.github.io/",
+    "version": "1.11.3",
+    "recommended": false
+  },
+  {
+    "formula": "tkey-ssh-agent",
+    "name": "tkey-ssh-agent",
+    "description": "SSH agent for use with the TKey security stick",
+    "homepage": "https://tillitis.se/",
+    "version": "1.1.1",
+    "recommended": false
+  },
+  {
+    "formula": "tomcat",
+    "name": "tomcat",
+    "description": "Implementation of Java Servlet and JavaServer Pages",
+    "homepage": "https://tomcat.apache.org/",
+    "version": "11.0.24",
+    "recommended": false
+  },
+  {
+    "formula": "tomcat@10",
+    "name": "tomcat@10",
+    "description": "Implementation of Java Servlet and JavaServer Pages",
+    "homepage": "https://tomcat.apache.org/",
+    "version": "10.1.57",
+    "recommended": false
+  },
+  {
+    "formula": "tomcat@9",
+    "name": "tomcat@9",
+    "description": "Implementation of Java Servlet and JavaServer Pages",
+    "homepage": "https://tomcat.apache.org/",
+    "version": "9.0.120",
+    "recommended": false
+  },
+  {
+    "formula": "tor",
+    "name": "tor",
+    "description": "Anonymizing overlay network for TCP",
+    "homepage": "https://www.torproject.org/",
+    "version": "0.4.9.11",
+    "recommended": false
+  },
+  {
+    "formula": "toxiproxy",
+    "name": "toxiproxy",
+    "description": "TCP proxy to simulate network & system conditions for chaos & resiliency testing",
+    "homepage": "https://github.com/shopify/toxiproxy",
+    "version": "2.12.0",
+    "recommended": false
+  },
+  {
+    "formula": "traefik",
+    "name": "traefik",
+    "description": "Modern reverse proxy",
+    "homepage": "https://traefik.io/",
+    "version": "3.7.7",
+    "recommended": false
+  },
+  {
+    "formula": "transmission-cli",
+    "name": "transmission-cli",
+    "description": "Lightweight BitTorrent client",
+    "homepage": "https://transmissionbt.com/",
+    "version": "4.1.3",
+    "recommended": false
+  },
+  {
+    "formula": "trezor-bridge",
+    "name": "trezor-bridge",
+    "description": "Trezor Communication Daemon",
+    "homepage": "https://github.com/trezor/trezord-go",
+    "version": "2.0.33",
+    "recommended": false
+  },
+  {
+    "formula": "trino",
+    "name": "trino",
+    "description": "Distributed SQL query engine for big data",
+    "homepage": "https://trino.io",
+    "version": "476",
+    "recommended": false
+  },
+  {
+    "formula": "trojan-go",
+    "name": "trojan-go",
+    "description": "Trojan proxy in Go",
+    "homepage": "https://p4gefau1t.github.io/trojan-go/",
+    "version": "0.10.6",
+    "recommended": false
+  },
+  {
+    "formula": "tronbyt-server",
+    "name": "tronbyt-server",
+    "description": "Manage your apps on your Tronbyt (flashed Tidbyt) completely locally",
+    "homepage": "https://github.com/tronbyt/server",
+    "version": "2.3.2",
+    "recommended": false
+  },
+  {
+    "formula": "twoping",
+    "name": "twoping",
+    "description": "Ping utility to determine directional packet loss",
+    "homepage": "https://www.finnie.org/software/2ping/",
+    "version": "4.6.1",
+    "recommended": false
+  },
+  {
+    "formula": "typedb",
+    "name": "typedb",
+    "description": "Strongly-typed database with a rich and logical type system",
+    "homepage": "https://typedb.com/",
+    "version": "3.12.0",
+    "recommended": false
+  },
+  {
+    "formula": "udp2raw-multiplatform",
+    "name": "udp2raw-multiplatform",
+    "description": "Multi-platform(cross-platform) version of udp2raw-tunnel client",
+    "homepage": "https://github.com/wangyu-/udp2raw-multiplatform",
+    "version": "20230206.0",
+    "recommended": false
+  },
+  {
+    "formula": "uftp",
+    "name": "uftp",
+    "description": "Secure, reliable, efficient multicast file transfer program",
+    "homepage": "https://uftp-multicast.sourceforge.net/",
+    "version": "5.0.3",
+    "recommended": false
+  },
+  {
+    "formula": "unbound",
+    "name": "unbound",
+    "description": "Validating, recursive, caching DNS resolver",
+    "homepage": "https://www.unbound.net",
+    "version": "1.25.1",
+    "recommended": false
+  },
+  {
+    "formula": "unitycatalog",
+    "name": "unitycatalog",
+    "description": "Open, Multi-modal Catalog for Data & AI",
+    "homepage": "https://unitycatalog.io/",
+    "version": "0.5.0",
+    "recommended": false
+  },
+  {
+    "formula": "uptimed",
+    "name": "uptimed",
+    "description": "Utility to track your highest uptimes",
+    "homepage": "https://github.com/rpodgorny/uptimed/",
+    "version": "0.4.7",
+    "recommended": false
+  },
+  {
+    "formula": "uwsgi",
+    "name": "uwsgi",
+    "description": "Full stack for building hosting services",
+    "homepage": "https://uwsgi-docs.readthedocs.io/en/latest/",
+    "version": "2.0.31",
+    "recommended": false
+  },
+  {
+    "formula": "v2ray",
+    "name": "v2ray",
+    "description": "Platform for building proxies to bypass network restrictions",
+    "homepage": "https://v2fly.org/",
+    "version": "5.51.2",
+    "recommended": false
+  },
+  {
+    "formula": "valkey",
+    "name": "valkey",
+    "description": "High-performance data structure server that primarily serves key/value workloads",
+    "homepage": "https://valkey.io",
+    "version": "9.1.0",
+    "recommended": false
+  },
+  {
+    "formula": "varnish",
+    "name": "varnish",
+    "description": "High-performance HTTP accelerator",
+    "homepage": "https://www.varnish-cache.org/",
+    "version": "9.0.3",
+    "recommended": false
+  },
+  {
+    "formula": "vdirsyncer",
+    "name": "vdirsyncer",
+    "description": "Synchronize calendars and contacts",
+    "homepage": "https://github.com/pimutils/vdirsyncer",
+    "version": "0.20.0",
+    "recommended": false
+  },
+  {
+    "formula": "victorialogs",
+    "name": "victorialogs",
+    "description": "Open source user-friendly database for logs from VictoriaMetrics",
+    "homepage": "https://docs.victoriametrics.com/victorialogs/",
+    "version": "1.51.0",
+    "recommended": false
+  },
+  {
+    "formula": "victoriametrics",
+    "name": "victoriametrics",
+    "description": "Cost-effective and scalable monitoring solution and time series database",
+    "homepage": "https://victoriametrics.com/",
+    "version": "1.147.0",
+    "recommended": false
+  },
+  {
+    "formula": "vnstat",
+    "name": "vnstat",
+    "description": "Console-based network traffic monitor",
+    "homepage": "https://humdi.net/vnstat/",
+    "version": "2.13",
+    "recommended": false
+  },
+  {
+    "formula": "vsftpd",
+    "name": "vsftpd",
+    "description": "Secure FTP server for UNIX",
+    "homepage": "https://security.appspot.com/vsftpd.html",
+    "version": "3.0.5",
+    "recommended": false
+  },
+  {
+    "formula": "vulcain",
+    "name": "vulcain",
+    "description": "Fast and idiomatic client-driven REST APIs",
+    "homepage": "https://vulcain.rocks/",
+    "version": "1.4.1",
+    "recommended": false
+  },
+  {
+    "formula": "webdis",
+    "name": "webdis",
+    "description": "Redis HTTP interface with JSON output",
+    "homepage": "https://webd.is/",
+    "version": "0.1.25",
+    "recommended": false
+  },
+  {
+    "formula": "wildfly-as",
+    "name": "wildfly-as",
+    "description": "Managed application runtime for building applications",
+    "homepage": "https://www.wildfly.org/",
+    "version": "40.0.1",
+    "recommended": false
+  },
+  {
+    "formula": "wmbusmeters",
+    "name": "wmbusmeters",
+    "description": "Read wired or wireless mbus protocol to acquire utility meter readings",
+    "homepage": "https://github.com/wmbusmeters/wmbusmeters",
+    "version": "3.0.0",
+    "recommended": false
+  },
+  {
+    "formula": "xinit",
+    "name": "xinit",
+    "description": "Start the X Window System server",
+    "homepage": "https://gitlab.freedesktop.org/xorg/app/xinit",
+    "version": "1.4.4",
+    "recommended": false
+  },
+  {
+    "formula": "xray",
+    "name": "xray",
+    "description": "Platform for building proxies to bypass network restrictions",
+    "homepage": "https://xtls.github.io/",
+    "version": "26.3.27",
+    "recommended": false
+  },
+  {
+    "formula": "yorkie",
+    "name": "yorkie",
+    "description": "Document store for collaborative applications",
+    "homepage": "https://yorkie.dev/",
+    "version": "0.7.12",
+    "recommended": false
+  },
+  {
+    "formula": "yubikey-agent",
+    "name": "yubikey-agent",
+    "description": "Seamless ssh-agent for YubiKeys and other PIV tokens",
+    "homepage": "https://github.com/FiloSottile/yubikey-agent",
+    "version": "0.1.6",
+    "recommended": false
+  },
+  {
+    "formula": "zeptoclaw",
+    "name": "zeptoclaw",
+    "description": "Lightweight personal AI gateway with layered safety controls",
+    "homepage": "https://zeptoclaw.com/",
+    "version": "0.9.2",
+    "recommended": false
+  },
+  {
+    "formula": "zeroclaw",
+    "name": "zeroclaw",
+    "description": "Rust-first autonomous agent runtime",
+    "homepage": "https://www.zeroclawlabs.ai/",
+    "version": "0.8.2",
+    "recommended": false
+  },
+  {
+    "formula": "zipkin",
+    "name": "zipkin",
+    "description": "Collect and visualize traces written in Zipkin format",
+    "homepage": "https://zipkin.io",
+    "version": "3.6.1",
+    "recommended": false
+  },
+  {
+    "formula": "znapzend",
+    "name": "znapzend",
+    "description": "ZFS backup with remote capabilities and mbuffer integration",
+    "homepage": "https://www.znapzend.org/",
+    "version": "0.23.6",
+    "recommended": false
+  },
+  {
+    "formula": "znc",
+    "name": "znc",
+    "description": "Advanced IRC bouncer",
+    "homepage": "https://wiki.znc.in/ZNC",
+    "version": "1.10.2",
+    "recommended": false
+  },
+  {
+    "formula": "zookeeper",
+    "name": "zookeeper",
+    "description": "Centralized server for distributed coordination of services",
+    "homepage": "https://zookeeper.apache.org/",
+    "version": "3.9.5",
+    "recommended": false
+  },
+  {
+    "formula": "zrepl",
+    "name": "zrepl",
+    "description": "One-stop ZFS backup & replication solution",
+    "homepage": "https://zrepl.github.io",
+    "version": "0.7.0",
+    "recommended": false
+  }
+]

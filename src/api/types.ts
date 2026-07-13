@@ -137,6 +137,16 @@ export interface FormulaStatusDto {
   current_version?: string | null;
 }
 
+export interface FormulaCatalogItemDto {
+  formula: string;
+  name: string;
+  description: string;
+  homepage?: string | null;
+  version?: string | null;
+  default_ports: number[];
+  recommended: boolean;
+}
+
 export interface FormulaInstallResultDto {
   formula: string;
   command: string[];

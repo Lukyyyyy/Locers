@@ -174,6 +174,18 @@ pub struct FormulaStatusDto {
     pub current_version: Option<String>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct FormulaCatalogItemDto {
+    pub formula: String,
+    pub name: String,
+    pub description: String,
+    pub homepage: Option<String>,
+    pub version: Option<String>,
+    #[serde(default)]
+    pub default_ports: Vec<u16>,
+    pub recommended: bool,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FormulaInstallResultDto {
     pub formula: String,

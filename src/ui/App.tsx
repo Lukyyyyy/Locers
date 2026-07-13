@@ -56,6 +56,7 @@ import { StatusPill } from "./status";
 
 const UPTIME_TICK_INTERVAL_MS = 1_000;
 const RECENT_ACTIVITY_DAY_COUNT = 3;
+const INSTALL_CATALOG_PAGE_SIZE = 40;
 
 export function App() {
   const nav = useUiStore((state) => state.nav);
@@ -104,56 +105,48 @@ export function App() {
   );
 }
 
-const INSTALL_CATALOG = [
+const FEATURED_INSTALL_CATALOG = [
   {
     formula: "postgresql@16",
     name: "PostgreSQL 16",
-    description: ["Relational database", "关系型数据库"],
-    port: 5432
+    description: ["Relational database", "关系型数据库"]
   },
   {
     formula: "mysql",
     name: "MySQL",
-    description: ["Relational database", "关系型数据库"],
-    port: 3306
+    description: ["Relational database", "关系型数据库"]
   },
-  { formula: "redis", name: "Redis", description: ["In-memory cache", "内存缓存"], port: 6379 },
+  { formula: "redis", name: "Redis", description: ["In-memory cache", "内存缓存"] },
   {
     formula: "rabbitmq",
     name: "RabbitMQ",
-    description: ["Message broker", "消息队列"],
-    port: 5672
+    description: ["Message broker", "消息队列"]
   },
-  { formula: "kafka", name: "Kafka", description: ["Event streaming", "事件流服务"], port: 9092 },
+  { formula: "kafka", name: "Kafka", description: ["Event streaming", "事件流服务"] },
   {
     formula: "nginx",
     name: "Nginx",
-    description: ["Web server and proxy", "Web 服务器与代理"],
-    port: 8080
+    description: ["Web server and proxy", "Web 服务器与代理"]
   },
   {
     formula: "caddy",
     name: "Caddy",
-    description: ["Web server with automatic HTTPS", "自动 HTTPS Web 服务器"],
-    port: 80
+    description: ["Web server with automatic HTTPS", "自动 HTTPS Web 服务器"]
   },
   {
     formula: "memcached",
     name: "Memcached",
-    description: ["Distributed memory cache", "分布式内存缓存"],
-    port: 11211
+    description: ["Distributed memory cache", "分布式内存缓存"]
   },
   {
     formula: "meilisearch",
     name: "Meilisearch",
-    description: ["Search engine", "搜索引擎"],
-    port: 7700
+    description: ["Search engine", "搜索引擎"]
   },
   {
     formula: "minio",
     name: "MinIO",
-    description: ["S3-compatible object storage", "兼容 S3 的对象存储"],
-    port: 9000
+    description: ["S3-compatible object storage", "兼容 S3 的对象存储"]
   }
 ] as const;
 
@@ -166,20 +159,49 @@ function InstallView() {
   const [upgradeFormula, setUpgradeFormula] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [visibleCatalogCount, setVisibleCatalogCount] = useState(INSTALL_CATALOG_PAGE_SIZE);
+  const loadMoreSentinelRef = useRef<HTMLDivElement>(null);
 
+  const catalogQuery = useQuery({
+    queryKey: ["formula-catalog"],
+    queryFn: api.getFormulaCatalog
+  });
+  const catalogRefreshQuery = useQuery({
+    queryKey: ["formula-catalog-refresh"],
+    queryFn: api.refreshFormulaCatalog,
+    enabled: catalogQuery.isSuccess,
+    staleTime: Infinity,
+    retry: false
+  });
+  const installCatalog = useMemo(
+    () =>
+      (catalogQuery.data ?? []).map((item) => {
+        const featured = FEATURED_INSTALL_CATALOG.find((entry) => entry.formula === item.formula);
+        return {
+          ...item,
+          name: featured?.name ?? formatMonitoringServiceName(item.name),
+          description: featured?.description ?? [
+            item.description,
+            localizeCatalogDescription(item.description)
+          ]
+        };
+      }),
+    [catalogQuery.data]
+  );
   const statusesQuery = useQuery({
     queryKey: ["formula-statuses"],
-    queryFn: api.getFormulaStatuses
+    queryFn: api.getFormulaStatuses,
+    enabled: catalogQuery.isSuccess
   });
   const statusByFormula = new Map((statusesQuery.data ?? []).map((item) => [item.formula, item]));
   const statusesLoaded = statusesQuery.data !== undefined;
-  const installedCount = INSTALL_CATALOG.filter(
+  const installedCount = installCatalog.filter(
     (item) => statusByFormula.get(item.formula)?.installed
   ).length;
-  const updatesCount = INSTALL_CATALOG.filter(
+  const updatesCount = installCatalog.filter(
     (item) => statusByFormula.get(item.formula)?.outdated
   ).length;
-  const filtered = INSTALL_CATALOG.filter((item) => {
+  const filtered = installCatalog.filter((item) => {
     const status = statusByFormula.get(item.formula);
     const matchesFilter =
       installFilter === "all" ||
@@ -190,17 +212,70 @@ function InstallView() {
       .includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
-  const selected = INSTALL_CATALOG.find((item) => item.formula === confirmFormula);
-  const selectedUpgrade = INSTALL_CATALOG.find((item) => item.formula === upgradeFormula);
+  const selected = installCatalog.find((item) => item.formula === confirmFormula);
+  const selectedUpgrade = installCatalog.find((item) => item.formula === upgradeFormula);
+  const visibleCatalog = filtered.slice(0, visibleCatalogCount);
+
+  useEffect(() => {
+    setVisibleCatalogCount(INSTALL_CATALOG_PAGE_SIZE);
+  }, [search, installFilter]);
+
+  useEffect(() => {
+    const sentinel = loadMoreSentinelRef.current;
+    if (
+      !sentinel ||
+      visibleCatalog.length >= filtered.length ||
+      typeof globalThis.IntersectionObserver === "undefined"
+    ) {
+      return;
+    }
+
+    const observer = new globalThis.IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCatalogCount((count) =>
+            Math.min(count + INSTALL_CATALOG_PAGE_SIZE, filtered.length)
+          );
+        }
+      },
+      { rootMargin: "240px 0px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [filtered.length, visibleCatalog.length]);
+
+  useEffect(() => {
+    const items = catalogRefreshQuery.data;
+    if (!items || items.length === 0) return;
+    queryClient.setQueryData(["formula-catalog"], items);
+    void queryClient.invalidateQueries({ queryKey: ["formula-statuses"] });
+  }, [catalogRefreshQuery.data, queryClient]);
+
+  const manualRefreshMutation = useMutation({
+    mutationFn: async () => {
+      const [catalog, statuses] = await Promise.all([
+        api.refreshFormulaCatalog(),
+        api.getFormulaStatuses()
+      ]);
+      return { catalog, statuses };
+    },
+    onSuccess: ({ catalog, statuses }) => {
+      if (catalog.length > 0) queryClient.setQueryData(["formula-catalog"], catalog);
+      queryClient.setQueryData(["formula-statuses"], statuses);
+      setError(null);
+    },
+    onError: (err) => setError(formatTauriError(err))
+  });
 
   const installMutation = useMutation({
     mutationFn: api.installFormula,
     onSuccess: (result) => {
-      const item = INSTALL_CATALOG.find((entry) => entry.formula === result.formula);
+      const item = installCatalog.find((entry) => entry.formula === result.formula);
       setConfirmFormula(null);
       setError(null);
       setNotice(t("installSuccess").replace("{name}", item?.name ?? result.formula));
-      queryClient.invalidateQueries({ queryKey: ["formula-statuses"] });
+      void queryClient.refetchQueries({ queryKey: ["formula-statuses"], type: "active" });
       queryClient.invalidateQueries({ queryKey: ["services"] });
       queryClient.invalidateQueries({ queryKey: ["activity"] });
     },
@@ -213,11 +288,11 @@ function InstallView() {
   const upgradeMutation = useMutation({
     mutationFn: api.upgradeFormula,
     onSuccess: (result) => {
-      const item = INSTALL_CATALOG.find((entry) => entry.formula === result.formula);
+      const item = installCatalog.find((entry) => entry.formula === result.formula);
       setUpgradeFormula(null);
       setError(null);
       setNotice(t("updateSuccess").replace("{name}", item?.name ?? result.formula));
-      queryClient.invalidateQueries({ queryKey: ["formula-statuses"] });
+      void queryClient.refetchQueries({ queryKey: ["formula-statuses"], type: "active" });
       queryClient.invalidateQueries({ queryKey: ["services"] });
       queryClient.invalidateQueries({ queryKey: ["activity"] });
     },
@@ -234,14 +309,29 @@ function InstallView() {
           <h1>{t("install")}</h1>
         </div>
       </div>
-      <label className="search-box install-search">
-        <Search size={16} />
-        <input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder={t("searchInstallServices")}
-        />
-      </label>
+      <div className="filters install-filters filters-with-refresh">
+        <label className="search-box install-search">
+          <Search size={16} />
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t("searchInstallServices")}
+          />
+        </label>
+        <button
+          className="primary-button refresh-icon-button"
+          aria-label={t("refresh")}
+          title={t("refresh")}
+          onClick={() => manualRefreshMutation.mutate()}
+          disabled={manualRefreshMutation.isPending || catalogRefreshQuery.isFetching}
+        >
+          {manualRefreshMutation.isPending || catalogRefreshQuery.isFetching ? (
+            <Loader2 className="spin" size={15} />
+          ) : (
+            <RefreshCcw size={15} />
+          )}
+        </button>
+      </div>
       <div className="install-filter" role="tablist" aria-label={t("installServices")}>
         <button
           type="button"
@@ -250,7 +340,8 @@ function InstallView() {
           className={installFilter === "all" ? "active" : ""}
           onClick={() => setInstallFilter("all")}
         >
-          {t("allInstallServices")} <span>{INSTALL_CATALOG.length}</span>
+          {t("allInstallServices")}{" "}
+          <span>{catalogQuery.isLoading ? "…" : installCatalog.length}</span>
         </button>
         <button
           type="button"
@@ -280,7 +371,7 @@ function InstallView() {
       )}
       {error && <div className="inline-error">{error}</div>}
       <div className="install-grid">
-        {filtered.map((item) => {
+        {visibleCatalog.map((item) => {
           const status = statusByFormula.get(item.formula);
           const installed = status?.installed ?? false;
           const pending = installMutation.isPending && installMutation.variables === item.formula;
@@ -297,8 +388,13 @@ function InstallView() {
                 <div className="install-meta">
                   <code>{item.formula}</code>
                   <span>
-                    {t("defaultPort")} {item.port}
+                    {t("versionLabel")} {item.version ?? t("unknownVersion")}
                   </span>
+                  {item.default_ports.length > 0 && (
+                    <span>
+                      {t("defaultPort")} {item.default_ports.join(", ")}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="install-card-action">
@@ -342,6 +438,16 @@ function InstallView() {
           );
         })}
       </div>
+      {visibleCatalog.length < filtered.length && (
+        <div ref={loadMoreSentinelRef} className="install-load-more-sentinel" aria-hidden="true" />
+      )}
+      {catalogQuery.isLoading && <div className="empty-state">{t("loadingInstallCatalog")}</div>}
+      {catalogQuery.isError && (
+        <div className="inline-error">{formatTauriError(catalogQuery.error)}</div>
+      )}
+      {filtered.length === 0 && search && installFilter === "all" && catalogQuery.isSuccess && (
+        <div className="empty-state">{t("noMatchingInstallServices")}</div>
+      )}
       {filtered.length === 0 && installFilter === "installed" && (
         <div className="empty-state">{t("noInstalledServices")}</div>
       )}
@@ -2055,6 +2161,34 @@ function formatMonitoringServiceName(name: string) {
   if (/^redis$/i.test(name)) return "Redis";
   if (/^minio$/i.test(name)) return "MinIO";
   return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+function localizeCatalogDescription(description: string) {
+  const value = description.toLowerCase();
+  if (
+    /apple intelligence|openai|artificial intelligence|large language|machine learning|model serving/.test(
+      value
+    )
+  )
+    return "AI 与模型服务";
+  if (/messag|event stream|queue|pub.?sub|broker/.test(value)) return "消息传递与事件流服务";
+  if (/database|dbms|sql|key.?value|data store|object storage|iceberg|catalog/.test(value))
+    return "数据库与数据存储服务";
+  if (/dns|ddns|domain name/.test(value)) return "DNS 与域名服务";
+  if (/monitor|metric|observability|logging|log ship|telemetry/.test(value))
+    return "监控、日志与可观测性服务";
+  if (/backup|sync|shell history|replicat/.test(value)) return "备份、同步与数据复制服务";
+  if (/search engine|full.?text search/.test(value)) return "搜索与索引服务";
+  if (/web server|http server|reverse proxy|api server|network proxy|load balanc/.test(value))
+    return "Web 与网络服务";
+  if (/security|authentication|identity|certificate|firewall|vpn|ssh|tls/.test(value))
+    return "安全与访问控制服务";
+  if (/media|audio|video|streaming server/.test(value)) return "音视频与媒体服务";
+  if (
+    /automation|developer|development|command.?line|\bcli\b|build|testing|test server/.test(value)
+  )
+    return "开发与自动化工具服务";
+  return "Homebrew 后台服务";
 }
 
 function formatCompactMemory(bytes: number) {

@@ -1,13 +1,32 @@
 use serde::Deserialize;
 use serde_json::json;
 use std::collections::HashSet;
+use std::path::Path;
 use std::time::Duration;
 
 use crate::{
     command_runner::{CommandOutput, CommandRunner},
     error::AppResult,
-    models::{DiscoveredService, LogSourceDto, ManagedService, ServiceStatus},
+    models::{
+        DiscoveredService, FormulaCatalogItemDto, LogSourceDto, ManagedService, ServiceStatus,
+    },
 };
+
+const FORMULA_API_URL: &str = "https://formulae.brew.sh/api/formula.json";
+const BUNDLED_FORMULA_CATALOG: &str = include_str!("formula_catalog_snapshot.json");
+const RECOMMENDED_FORMULAE: &[&str] = &[
+    "postgresql@16",
+    "mysql",
+    "redis",
+    "rabbitmq",
+    "kafka",
+    "nginx",
+    "caddy",
+    "memcached",
+    "meilisearch",
+    "minio",
+];
+type OutdatedFormula = (String, Option<String>, Option<String>);
 
 pub trait ServiceProvider {
     fn id(&self) -> &'static str;
@@ -45,6 +64,23 @@ struct BrewOutdatedFormula {
     #[serde(default)]
     installed_versions: Vec<String>,
     current_version: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BrewFormulaApiRow {
+    name: String,
+    full_name: String,
+    desc: String,
+    homepage: Option<String>,
+    versions: BrewFormulaVersions,
+    service: Option<serde_json::Value>,
+    #[serde(default)]
+    disabled: bool,
+}
+
+#[derive(Debug, Deserialize)]
+struct BrewFormulaVersions {
+    stable: Option<String>,
 }
 
 impl HomebrewProvider {
@@ -96,6 +132,77 @@ impl HomebrewProvider {
         Ok(Self::parse_installed_formulae(&output.stdout))
     }
 
+    pub fn formula_catalog(
+        &self,
+        etag_path: &Path,
+    ) -> AppResult<Option<Vec<FormulaCatalogItemDto>>> {
+        let etag_path = etag_path.to_string_lossy().to_string();
+        let mut args = vec![
+            "--fail".to_string(),
+            "--silent".to_string(),
+            "--show-error".to_string(),
+            "--location".to_string(),
+            "--compressed".to_string(),
+        ];
+        if Path::new(&etag_path).exists() {
+            args.extend(["--etag-compare".to_string(), etag_path.clone()]);
+        }
+        args.extend([
+            "--etag-save".to_string(),
+            etag_path,
+            FORMULA_API_URL.to_string(),
+        ]);
+        let arg_refs: Vec<_> = args.iter().map(String::as_str).collect();
+        let output =
+            self.runner
+                .run_with_timeout("/usr/bin/curl", &arg_refs, Duration::from_secs(30))?;
+        if output.exit_code != 0 {
+            return Err(crate::error::AppError::Command(format!(
+                "Homebrew formula catalog request failed: {}",
+                output.stderr.trim()
+            )));
+        }
+        if output.stdout.trim().is_empty() {
+            return Ok(None);
+        }
+        Self::parse_formula_catalog_json(&output.stdout).map(Some)
+    }
+
+    pub fn bundled_formula_catalog() -> AppResult<Vec<FormulaCatalogItemDto>> {
+        let mut items: Vec<FormulaCatalogItemDto> = serde_json::from_str(BUNDLED_FORMULA_CATALOG)?;
+        for item in &mut items {
+            item.default_ports = default_ports(&item.name);
+        }
+        Ok(items)
+    }
+
+    fn parse_formula_catalog_json(input: &str) -> AppResult<Vec<FormulaCatalogItemDto>> {
+        let rows: Vec<BrewFormulaApiRow> = serde_json::from_str(input)?;
+        let mut items: Vec<_> = rows
+            .into_iter()
+            .filter(|row| row.service.is_some() && !row.disabled)
+            .map(|row| {
+                let ports = default_ports(&row.name);
+                FormulaCatalogItemDto {
+                    recommended: RECOMMENDED_FORMULAE.contains(&row.full_name.as_str()),
+                    formula: row.full_name,
+                    name: row.name,
+                    description: row.desc,
+                    homepage: row.homepage,
+                    version: row.versions.stable,
+                    default_ports: ports,
+                }
+            })
+            .collect();
+        items.sort_by(|left, right| {
+            right
+                .recommended
+                .cmp(&left.recommended)
+                .then_with(|| left.name.cmp(&right.name))
+        });
+        Ok(items)
+    }
+
     fn parse_installed_formulae(input: &str) -> Vec<(String, String)> {
         input
             .lines()
@@ -119,7 +226,7 @@ impl HomebrewProvider {
         )
     }
 
-    pub fn outdated_formulae(&self) -> AppResult<Vec<(String, Option<String>, Option<String>)>> {
+    pub fn outdated_formulae(&self) -> AppResult<Vec<OutdatedFormula>> {
         let brew = CommandRunner::find_brew()?;
         let output = self
             .runner
@@ -133,9 +240,7 @@ impl HomebrewProvider {
         Self::parse_outdated_json(&output.stdout)
     }
 
-    fn parse_outdated_json(
-        input: &str,
-    ) -> AppResult<Vec<(String, Option<String>, Option<String>)>> {
+    fn parse_outdated_json(input: &str) -> AppResult<Vec<OutdatedFormula>> {
         let response: BrewOutdatedResponse = serde_json::from_str(input)?;
         Ok(response
             .formulae
@@ -178,6 +283,55 @@ impl HomebrewProvider {
                 }
             })
             .collect())
+    }
+}
+
+fn default_ports(formula: &str) -> Vec<u16> {
+    match formula {
+        "activemq" => vec![61616, 8161],
+        "apache-pulsar" => vec![6650, 8080],
+        "appium" => vec![4723],
+        "beanstalkd" => vec![11300],
+        "bind" => vec![53],
+        "caddy" => vec![80, 443],
+        "cassandra" => vec![9042],
+        "clickhouse" => vec![8123, 9000],
+        "consul" => vec![8500],
+        "couchdb" => vec![5984],
+        "dnsmasq" => vec![53],
+        "elasticsearch" => vec![9200, 9300],
+        "etcd" => vec![2379, 2380],
+        "grafana" => vec![3000],
+        "haproxy" | "haproxy@2.8" => vec![8080],
+        "httpd" => vec![8080],
+        "influxdb" | "influxdb@1" | "influxdb@2" => vec![8086],
+        "jenkins" | "jenkins-lts" => vec![8080],
+        "kafka" => vec![9092],
+        "kibana" => vec![5601],
+        "mailpit" => vec![1025, 8025],
+        "mariadb" | "mariadb@10.5" | "mariadb@10.6" | "mariadb@10.11" | "mariadb@11.4"
+        | "mariadb@11.8" => vec![3306],
+        "meilisearch" => vec![7700],
+        "memcached" => vec![11211],
+        "minio" => vec![9000],
+        "mongodb-community" => vec![27017],
+        "mosquitto" => vec![1883],
+        "mysql" | "mysql@8.0" | "mysql@8.4" => vec![3306],
+        "neo4j" => vec![7474, 7687],
+        "nginx" => vec![8080],
+        "ollama" => vec![11434],
+        "opensearch" => vec![9200, 9600],
+        "postgresql@12" | "postgresql@13" | "postgresql@14" | "postgresql@15" | "postgresql@16"
+        | "postgresql@17" | "postgresql@18" => vec![5432],
+        "prometheus" => vec![9090],
+        "rabbitmq" => vec![5672],
+        "redis" | "redis@6.2" | "redis@8.2" | "redict" | "valkey" => vec![6379],
+        "solr" | "solr@8.11" => vec![8983],
+        "sonarqube" => vec![9000],
+        "tomcat" | "tomcat@9" | "tomcat@10" => vec![8080],
+        "traefik" => vec![80, 8080],
+        "zookeeper" => vec![2181],
+        _ => Vec::new(),
     }
 }
 
@@ -363,6 +517,34 @@ mod tests {
                 Some("8.8.1".to_string())
             )]
         );
+    }
+
+    #[test]
+    fn parses_only_enabled_formulae_with_service_definitions() {
+        let json = r#"[
+          {"name":"redis","full_name":"redis","desc":"Key-value database","homepage":"https://redis.io/","versions":{"stable":"8.8.0"},"service":{"run":["redis-server"]},"disabled":false},
+          {"name":"jq","full_name":"jq","desc":"JSON processor","homepage":"https://jqlang.org/","versions":{"stable":"1.8.1"},"service":null,"disabled":false},
+          {"name":"old-server","full_name":"old-server","desc":"Old server","homepage":null,"versions":{"stable":null},"service":{"run":["old-server"]},"disabled":true}
+        ]"#;
+
+        let catalog = HomebrewProvider::parse_formula_catalog_json(json).expect("catalog");
+        assert_eq!(catalog.len(), 1);
+        assert_eq!(catalog[0].formula, "redis");
+        assert!(catalog[0].recommended);
+        assert_eq!(catalog[0].version.as_deref(), Some("8.8.0"));
+        assert_eq!(catalog[0].default_ports, vec![6379]);
+    }
+
+    #[test]
+    fn bundled_catalog_is_complete_and_contains_display_metadata() {
+        let catalog = HomebrewProvider::bundled_formula_catalog().expect("bundled catalog");
+        assert!(catalog.len() >= 300);
+        let redis = catalog
+            .iter()
+            .find(|item| item.formula == "redis")
+            .expect("redis metadata");
+        assert!(redis.version.is_some());
+        assert_eq!(redis.default_ports, vec![6379]);
     }
 
     #[test]

@@ -1,4 +1,5 @@
 use std::{
+    io::Read,
     path::PathBuf,
     process::{Command, Stdio},
     thread,
@@ -54,18 +55,39 @@ impl CommandRunner {
             .spawn()
             .map_err(|err| AppError::Command(format!("failed to spawn {program}: {err}")))?;
 
+        // Drain both pipes while the process runs. Waiting before reading can
+        // deadlock commands with large JSON responses once an OS pipe fills.
+        let mut stdout = child.stdout.take().expect("stdout is piped");
+        let mut stderr = child.stderr.take().expect("stderr is piped");
+        let stdout_reader = thread::spawn(move || {
+            let mut bytes = Vec::new();
+            stdout.read_to_end(&mut bytes).map(|_| bytes)
+        });
+        let stderr_reader = thread::spawn(move || {
+            let mut bytes = Vec::new();
+            stderr.read_to_end(&mut bytes).map(|_| bytes)
+        });
+
         loop {
-            if child.try_wait()?.is_some() {
-                let output = child.wait_with_output()?;
+            if let Some(status) = child.try_wait()? {
+                let stdout = stdout_reader
+                    .join()
+                    .map_err(|_| AppError::Command("stdout reader panicked".into()))??;
+                let stderr = stderr_reader
+                    .join()
+                    .map_err(|_| AppError::Command("stderr reader panicked".into()))??;
                 return Ok(CommandOutput {
-                    stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-                    stderr: String::from_utf8_lossy(&output.stderr).to_string(),
-                    exit_code: output.status.code().unwrap_or(-1),
+                    stdout: String::from_utf8_lossy(&stdout).to_string(),
+                    stderr: String::from_utf8_lossy(&stderr).to_string(),
+                    exit_code: status.code().unwrap_or(-1),
                     duration_ms: started_at.elapsed().as_millis() as i64,
                 });
             }
             if started_at.elapsed() > timeout {
                 let _ = child.kill();
+                let _ = child.wait();
+                let _ = stdout_reader.join();
+                let _ = stderr_reader.join();
                 return Err(AppError::Command(format!(
                     "{program} timed out after {}ms",
                     timeout.as_millis()
@@ -110,5 +132,17 @@ mod tests {
         let runner = CommandRunner::with_timeout(Duration::from_millis(50));
         let error = runner.run("/bin/sleep", &["1"]).expect_err("timeout");
         assert!(error.to_string().contains("timed out"));
+    }
+
+    #[test]
+    fn drains_output_larger_than_an_os_pipe() {
+        let runner = CommandRunner::with_timeout(Duration::from_secs(3));
+        let output = runner
+            .run(
+                "/bin/sh",
+                &["-c", "dd if=/dev/zero bs=1024 count=256 2>/dev/null"],
+            )
+            .expect("large output");
+        assert_eq!(output.stdout.len(), 256 * 1024);
     }
 }

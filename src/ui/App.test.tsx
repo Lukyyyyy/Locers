@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useUiStore } from "../state/uiStore";
@@ -33,6 +33,35 @@ function activityDate(daysAgo: number, hour: number, minute: number) {
 }
 
 function mockDefaultInvoke(command: string) {
+  if (command === "get_formula_catalog") {
+    return Promise.resolve([
+      {
+        formula: "mysql",
+        name: "mysql",
+        description: "Open source relational database management system",
+        version: "9.4.0",
+        default_ports: [3306],
+        recommended: true
+      },
+      {
+        formula: "redis",
+        name: "redis",
+        description: "Persistent key-value database",
+        version: "8.8.0",
+        default_ports: [6379],
+        recommended: true
+      },
+      {
+        formula: "ollama",
+        name: "ollama",
+        description: "Create, run, and share large language models",
+        version: "0.9.6",
+        default_ports: [11434],
+        recommended: false
+      }
+    ]);
+  }
+  if (command === "refresh_formula_catalog") return Promise.resolve([]);
   if (command === "get_formula_statuses") {
     return Promise.resolve([{ formula: "redis", installed: true, version: "7.2.5" }]);
   }
@@ -316,6 +345,7 @@ describe("App", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
   });
 
   it("shows the Locers product brand", () => {
@@ -808,6 +838,128 @@ describe("App", () => {
 
     expect(invoke).toHaveBeenCalledWith("install_formula", { formula: "mysql" });
     expect(await screen.findByText("MySQL was installed successfully.")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        vi.mocked(invoke).mock.calls.filter(([command]) => command === "get_formula_statuses")
+          .length
+      ).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  it("manually refreshes the install catalog and formula statuses", async () => {
+    const user = userEvent.setup();
+    renderApp();
+    await user.click(screen.getByRole("button", { name: "Install" }));
+    const refreshButton = await screen.findByRole("button", { name: "Refresh" });
+    await waitFor(() => expect(refreshButton).toBeEnabled());
+    const refreshCallsBefore = vi
+      .mocked(invoke)
+      .mock.calls.filter(([command]) => command === "refresh_formula_catalog").length;
+
+    await user.click(refreshButton);
+
+    await waitFor(() => {
+      expect(
+        vi.mocked(invoke).mock.calls.filter(([command]) => command === "refresh_formula_catalog")
+          .length
+      ).toBeGreaterThan(refreshCallsBefore);
+    });
+    expect(refreshButton).toHaveClass("refresh-icon-button");
+  });
+
+  it("shows and searches services returned by the dynamic Homebrew catalog", async () => {
+    const user = userEvent.setup();
+    renderApp();
+    await user.click(screen.getByRole("button", { name: "Install" }));
+
+    expect(await screen.findByRole("heading", { name: "Ollama" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "All 3" })).toBeInTheDocument();
+    expect(screen.getByText("Version 0.9.6")).toBeInTheDocument();
+    expect(screen.getByText("Default port 11434")).toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText("Search services"), "large language");
+    expect(screen.getByRole("heading", { name: "Ollama" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "MySQL" })).not.toBeInTheDocument();
+  });
+
+  it("automatically reveals more install services when the list bottom approaches", async () => {
+    type TestIntersectionCallback = (entries: Array<{ isIntersecting: boolean }>) => void;
+    let intersectionCallback: TestIntersectionCallback | undefined;
+    class IntersectionObserverMock {
+      readonly root = null;
+      readonly rootMargin = "240px 0px";
+      readonly thresholds = [0];
+      constructor(callback: TestIntersectionCallback) {
+        intersectionCallback = callback;
+      }
+      disconnect() {}
+      observe() {}
+      takeRecords() {
+        return [];
+      }
+      unobserve() {}
+    }
+    vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
+
+    const catalog = Array.from({ length: 41 }, (_, index) => ({
+      formula: `service-${index}`,
+      name: `service-${index}`,
+      description: `Test service ${index}`,
+      version: "1.0.0",
+      default_ports: [],
+      recommended: false
+    }));
+    vi.mocked(invoke).mockImplementation((command: string) => {
+      if (command === "get_formula_catalog") return Promise.resolve(catalog);
+      if (command === "refresh_formula_catalog" || command === "get_formula_statuses") {
+        return Promise.resolve([]);
+      }
+      return mockDefaultInvoke(command);
+    });
+
+    const user = userEvent.setup();
+    renderApp();
+    await user.click(screen.getByRole("button", { name: "Install" }));
+
+    expect(await screen.findByText("service-39")).toBeInTheDocument();
+    expect(screen.queryByText("service-40")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /show .* more/i })).not.toBeInTheDocument();
+
+    act(() => {
+      intersectionCallback?.([{ isIntersecting: true }]);
+    });
+
+    expect(await screen.findByText("service-40")).toBeInTheDocument();
+  });
+
+  it("uses Chinese catalog descriptions and hides undeclared ports", async () => {
+    useUiStore.setState({ language: "zh" });
+    vi.mocked(invoke).mockImplementation((command: string) => {
+      if (command === "get_formula_catalog") {
+        return Promise.resolve([
+          {
+            formula: "aliddns",
+            name: "aliddns",
+            description: "Aliyun(Alibaba Cloud) ddns for golang",
+            version: "0.0.23",
+            default_ports: [],
+            recommended: false
+          }
+        ]);
+      }
+      if (command === "refresh_formula_catalog" || command === "get_formula_statuses") {
+        return Promise.resolve([]);
+      }
+      return mockDefaultInvoke(command);
+    });
+
+    renderApp();
+    await userEvent.setup().click(screen.getByRole("button", { name: "安装" }));
+
+    expect(await screen.findByText("DNS 与域名服务")).toBeInTheDocument();
+    expect(screen.queryByText("Aliyun(Alibaba Cloud) ddns for golang")).not.toBeInTheDocument();
+    expect(screen.queryByText(/默认端口/)).not.toBeInTheDocument();
+    expect(screen.getByText("版本 0.0.23")).toBeInTheDocument();
   });
 
   it("filters the install catalog to installed services", async () => {

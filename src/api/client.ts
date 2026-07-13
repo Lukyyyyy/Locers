@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import type {
   AppInfoDto,
   DataCleanupResultDto,
+  FormulaCatalogItemDto,
   FormulaInstallResultDto,
   FormulaUpgradeResultDto,
   FormulaStatusDto,
@@ -83,6 +84,103 @@ const demoServices: ServiceSummaryDto[] = [
 ];
 
 export const api = {
+  getFormulaCatalog: () =>
+    isTauriRuntime()
+      ? invoke<FormulaCatalogItemDto[]>("get_formula_catalog")
+      : Promise.resolve<FormulaCatalogItemDto[]>([
+          {
+            formula: "postgresql@16",
+            name: "postgresql@16",
+            description: "Object-relational database system",
+            version: "16.10",
+            default_ports: [5432],
+            recommended: true
+          },
+          {
+            formula: "mysql",
+            name: "mysql",
+            description: "Open source relational database management system",
+            version: "9.4.0",
+            default_ports: [3306],
+            recommended: true
+          },
+          {
+            formula: "redis",
+            name: "redis",
+            description: "Persistent key-value database",
+            version: "8.8.0",
+            default_ports: [6379],
+            recommended: true
+          },
+          {
+            formula: "rabbitmq",
+            name: "rabbitmq",
+            description: "Messaging broker",
+            version: "4.1.4",
+            default_ports: [5672],
+            recommended: true
+          },
+          {
+            formula: "kafka",
+            name: "kafka",
+            description: "Open-source distributed event streaming platform",
+            version: "4.0.0",
+            default_ports: [9092],
+            recommended: true
+          },
+          {
+            formula: "nginx",
+            name: "nginx",
+            description: "HTTP server and reverse proxy",
+            version: "1.29.1",
+            default_ports: [8080],
+            recommended: true
+          },
+          {
+            formula: "caddy",
+            name: "caddy",
+            description: "Powerful, enterprise-ready, open source web server",
+            version: "2.10.2",
+            default_ports: [80, 443],
+            recommended: true
+          },
+          {
+            formula: "memcached",
+            name: "memcached",
+            description: "High performance distributed memory object caching system",
+            version: "1.6.39",
+            default_ports: [11211],
+            recommended: true
+          },
+          {
+            formula: "meilisearch",
+            name: "meilisearch",
+            description: "Ultra relevant, instant and typo-tolerant full-text search",
+            version: "1.15.2",
+            default_ports: [7700],
+            recommended: true
+          },
+          {
+            formula: "minio",
+            name: "minio",
+            description: "High performance object storage server",
+            version: "2025-04-22",
+            default_ports: [9000],
+            recommended: true
+          },
+          {
+            formula: "ollama",
+            name: "ollama",
+            description: "Create, run, and share large language models",
+            version: "0.9.6",
+            default_ports: [11434],
+            recommended: false
+          }
+        ]),
+  refreshFormulaCatalog: () =>
+    isTauriRuntime()
+      ? invoke<FormulaCatalogItemDto[]>("refresh_formula_catalog")
+      : Promise.resolve<FormulaCatalogItemDto[]>([]),
   getFormulaStatuses: () =>
     isTauriRuntime()
       ? invoke<FormulaStatusDto[]>("get_formula_statuses")
