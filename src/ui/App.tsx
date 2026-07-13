@@ -19,6 +19,7 @@ import {
   Check,
   Copy,
   Database,
+  Eraser,
   Loader2,
   Play,
   PlugZap,
@@ -1141,8 +1142,16 @@ function ServiceInspector({
   const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<"status" | "logs" | "activity">("status");
   const [logsCopied, setLogsCopied] = useState(false);
+  const [clearedLogView, setClearedLogView] = useState<{
+    serviceId: string;
+    initialText: string;
+    archivedScreens: string[];
+    baselineLines: string[];
+    screenHeight: number;
+  } | null>(null);
   const inspectorRef = useRef<ComponentRef<"aside">>(null);
   const logViewRef = useRef<ComponentRef<"pre">>(null);
+  const currentLogScreenRef = useRef<ComponentRef<"span">>(null);
   const isFollowingLogsRef = useRef(true);
   const copyFeedbackTimeoutRef = useRef<number | null>(null);
 
@@ -1159,11 +1168,25 @@ function ServiceInspector({
     refetchInterval: activeTab === "logs" ? 1_500 : false
   });
 
-  const logText = buildServiceLogLines(
+  const logLines = buildServiceLogLines(
     sessionLogLines,
     logsQuery.data?.lines ?? [],
     logsQuery.data?.error
-  ).join("\n");
+  );
+  const logText = logLines.join("\n");
+  const activeClearedLogView = clearedLogView?.serviceId === serviceId ? clearedLogView : null;
+  const currentScreenText = activeClearedLogView
+    ? getAppendedLogLines(activeClearedLogView.baselineLines, logLines).join("\n")
+    : logText;
+  const visibleLogText = activeClearedLogView
+    ? [
+        activeClearedLogView.initialText,
+        ...activeClearedLogView.archivedScreens,
+        currentScreenText
+      ]
+        .filter(Boolean)
+        .join("\n")
+    : logText;
 
   useEffect(() => {
     if (activeTab !== "logs" || !logViewRef.current) return;
@@ -1175,6 +1198,12 @@ function ServiceInspector({
     if (activeTab !== "logs" || !logViewRef.current || !isFollowingLogsRef.current) return;
     logViewRef.current.scrollTop = logViewRef.current.scrollHeight;
   }, [activeTab, logText]);
+
+  useEffect(() => {
+    if (!activeClearedLogView || !logViewRef.current || !currentLogScreenRef.current) return;
+    isFollowingLogsRef.current = true;
+    logViewRef.current.scrollTop = currentLogScreenRef.current.offsetTop;
+  }, [activeClearedLogView]);
 
   useEffect(() => {
     setLogsCopied(false);
@@ -1239,13 +1268,46 @@ function ServiceInspector({
   };
 
   const copyLogs = async () => {
-    const copied = await copyTextToClipboard(logText);
+    const copied = await copyTextToClipboard(visibleLogText);
     if (!copied) return;
     setLogsCopied(true);
     if (copyFeedbackTimeoutRef.current !== null) {
       window.clearTimeout(copyFeedbackTimeoutRef.current);
     }
     copyFeedbackTimeoutRef.current = window.setTimeout(() => setLogsCopied(false), 1_500);
+  };
+
+  const clearLogScreen = () => {
+    const logView = logViewRef.current;
+    if (!logView || !serviceId) return;
+
+    if (activeClearedLogView && !currentScreenText) {
+      isFollowingLogsRef.current = true;
+      if (currentLogScreenRef.current) {
+        logView.scrollTop = currentLogScreenRef.current.offsetTop;
+      }
+      return;
+    }
+
+    const screenHeight = logView.clientHeight;
+    isFollowingLogsRef.current = true;
+    setClearedLogView((current) => {
+      if (current?.serviceId === serviceId) {
+        return {
+          ...current,
+          archivedScreens: [...current.archivedScreens, currentScreenText],
+          baselineLines: logLines,
+          screenHeight
+        };
+      }
+      return {
+        serviceId,
+        initialText: logText,
+        archivedScreens: [],
+        baselineLines: logLines,
+        screenHeight
+      };
+    });
   };
 
   return (
@@ -1314,24 +1376,86 @@ function ServiceInspector({
             tabIndex={0}
             onScroll={handleLogScroll}
           >
-            {logText}
+            {activeClearedLogView ? (
+              <>
+                <span className="log-history">{activeClearedLogView.initialText}</span>
+                {activeClearedLogView.archivedScreens.map((screen, index) => (
+                  <span
+                    className="log-screen"
+                    style={{ minHeight: activeClearedLogView.screenHeight }}
+                    key={index}
+                  >
+                    {screen}
+                  </span>
+                ))}
+                <span
+                  ref={currentLogScreenRef}
+                  className="log-screen"
+                  data-testid="current-log-screen"
+                  style={{ minHeight: activeClearedLogView.screenHeight }}
+                >
+                  {currentScreenText}
+                </span>
+              </>
+            ) : (
+              <span className="log-history">{logText}</span>
+            )}
           </pre>
-          <button
-            type="button"
-            className="log-copy-button"
-            aria-label={logsCopied ? t("logsCopied") : t("copyLogs")}
-            title={logsCopied ? t("logsCopied") : t("copyLogs")}
-            disabled={!logText}
-            onClick={() => void copyLogs()}
-          >
-            {logsCopied ? <Check size={14} /> : <Copy size={14} />}
-          </button>
+          <div className="log-actions">
+            <button
+              type="button"
+              className="log-action-button"
+              aria-label={t("clearLogScreen")}
+              title={t("clearLogScreen")}
+              disabled={!visibleLogText}
+              onClick={clearLogScreen}
+            >
+              <Eraser size={14} />
+            </button>
+            <button
+              type="button"
+              className="log-action-button log-copy-button"
+              aria-label={logsCopied ? t("logsCopied") : t("copyLogs")}
+              title={logsCopied ? t("logsCopied") : t("copyLogs")}
+              disabled={!visibleLogText}
+              onClick={() => void copyLogs()}
+            >
+              {logsCopied ? <Check size={14} /> : <Copy size={14} />}
+            </button>
+          </div>
         </div>
       ) : (
         <RecentActivityTimeline operations={detail.history} />
       )}
     </aside>
   );
+}
+
+function getAppendedLogLines(baselineLines: string[], currentLines: string[]): string[] {
+  const insertedLines: string[] = [];
+  let baselineIndex = 0;
+  for (const line of currentLines) {
+    if (line === baselineLines[baselineIndex]) {
+      baselineIndex += 1;
+    } else {
+      insertedLines.push(line);
+    }
+  }
+  if (baselineIndex === baselineLines.length) return insertedLines;
+
+  const maxOverlap = Math.min(baselineLines.length, currentLines.length);
+  for (let overlap = maxOverlap; overlap > 0; overlap -= 1) {
+    const baselineStart = baselineLines.length - overlap;
+    let matches = true;
+    for (let index = 0; index < overlap; index += 1) {
+      if (baselineLines[baselineStart + index] !== currentLines[index]) {
+        matches = false;
+        break;
+      }
+    }
+    if (matches) return currentLines.slice(overlap);
+  }
+  return currentLines;
 }
 
 function buildServiceLogLines(

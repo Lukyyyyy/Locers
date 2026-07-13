@@ -960,6 +960,7 @@ select,
 }
 
 .log-view {
+  position: relative;
   min-height: 145px;
   max-height: 260px;
   overflow: auto;
@@ -968,7 +969,7 @@ select,
   background: #111722;
   color: #dce7f7;
   border-radius: 8px;
-  padding: 12px;
+  padding: 0;
   font-size: 12px;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -1012,11 +1013,19 @@ select,
   margin: 0;
 }
 
-.log-copy-button {
+.log-actions {
   position: absolute;
   z-index: 2;
   top: 8px;
   right: 12px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+}
+
+.log-action-button {
   width: 28px;
   height: 28px;
   padding: 0;
@@ -1024,28 +1033,31 @@ select,
   border-color: rgba(148, 163, 184, 0.35);
   background: rgba(30, 41, 59, 0.92);
   color: #dce7f7;
-  opacity: 0;
-  pointer-events: none;
   transition:
-    opacity 140ms ease,
     background-color 140ms ease,
     border-color 140ms ease;
 }
 
-.log-view-shell:hover .log-copy-button,
-.log-view-shell:focus-within .log-copy-button,
-.log-copy-button:focus-visible {
+.log-view-shell:hover .log-actions,
+.log-view-shell:focus-within .log-actions {
   opacity: 1;
   pointer-events: auto;
 }
 
-.log-copy-button:hover:not(:disabled) {
+.log-action-button:hover:not(:disabled) {
   border-color: rgba(191, 219, 254, 0.6);
   background: rgba(51, 65, 85, 0.98);
 }
 
-.log-copy-button:disabled {
+.log-action-button:disabled {
   opacity: 0;
+}
+
+.log-history,
+.log-screen {
+  display: block;
+  box-sizing: border-box;
+  padding: 12px;
 }
 
 .log-source-list {

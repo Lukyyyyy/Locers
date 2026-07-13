@@ -758,6 +758,46 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Copied" })).toBeInTheDocument();
   });
 
+  it("clears the log viewport while preserving scrollback", async () => {
+    const user = userEvent.setup();
+    vi.mocked(invoke).mockImplementation((command: string) => {
+      if (command === "get_service_logs") {
+        return Promise.resolve({
+          source: null,
+          lines: ["redis ready", "accepting connections"],
+          error: null
+        });
+      }
+      return mockDefaultInvoke(command);
+    });
+
+    const { container } = renderApp();
+    await screen.findByRole("heading", { name: "redis" });
+    await user.click(screen.getByRole("tab", { name: "Logs" }));
+    const logView = container.querySelector(".session-log") as HTMLElement;
+    Object.defineProperties(logView, {
+      scrollHeight: { configurable: true, value: 1_000 },
+      clientHeight: { configurable: true, value: 200 }
+    });
+
+    await user.click(await screen.findByRole("button", { name: "Clear screen" }));
+
+    expect(logView).toHaveTextContent("redis ready");
+    expect(logView).toHaveTextContent("accepting connections");
+    const currentScreen = screen.getByTestId("current-log-screen");
+    const clearButton = screen.getByRole("button", { name: "Clear screen" });
+    expect(currentScreen).toBeEmptyDOMElement();
+    expect(currentScreen).toHaveStyle({ minHeight: "200px" });
+    expect(clearButton).toBeEnabled();
+
+    Object.defineProperty(currentScreen, "offsetTop", { configurable: true, value: 640 });
+    logView.scrollTop = 120;
+    await user.click(clearButton);
+
+    expect(logView.scrollTop).toBe(640);
+    expect(logView.querySelectorAll(".log-screen")).toHaveLength(1);
+  });
+
   it("falls back to selection-based log copying when clipboard access is denied", async () => {
     const user = userEvent.setup();
     Object.defineProperty(globalThis.navigator, "clipboard", {
