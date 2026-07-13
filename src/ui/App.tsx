@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   AlertTriangle,
+  ArrowUpCircle,
   Check,
   Copy,
   Database,
@@ -160,8 +161,9 @@ function InstallView() {
   const queryClient = useQueryClient();
   const { t, language } = useI18n();
   const [search, setSearch] = useState("");
-  const [installFilter, setInstallFilter] = useState<"all" | "installed">("all");
+  const [installFilter, setInstallFilter] = useState<"all" | "installed" | "updates">("all");
   const [confirmFormula, setConfirmFormula] = useState<string | null>(null);
+  const [upgradeFormula, setUpgradeFormula] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -174,15 +176,22 @@ function InstallView() {
   const installedCount = INSTALL_CATALOG.filter(
     (item) => statusByFormula.get(item.formula)?.installed
   ).length;
+  const updatesCount = INSTALL_CATALOG.filter(
+    (item) => statusByFormula.get(item.formula)?.outdated
+  ).length;
   const filtered = INSTALL_CATALOG.filter((item) => {
+    const status = statusByFormula.get(item.formula);
     const matchesFilter =
-      installFilter === "all" || statusByFormula.get(item.formula)?.installed === true;
+      installFilter === "all" ||
+      (installFilter === "installed" && status?.installed === true) ||
+      (installFilter === "updates" && status?.outdated === true);
     const matchesSearch = `${item.name} ${item.formula} ${item.description.join(" ")}`
       .toLowerCase()
       .includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
   const selected = INSTALL_CATALOG.find((item) => item.formula === confirmFormula);
+  const selectedUpgrade = INSTALL_CATALOG.find((item) => item.formula === upgradeFormula);
 
   const installMutation = useMutation({
     mutationFn: api.installFormula,
@@ -197,6 +206,23 @@ function InstallView() {
     },
     onError: (err) => {
       setConfirmFormula(null);
+      setError(formatTauriError(err));
+    }
+  });
+
+  const upgradeMutation = useMutation({
+    mutationFn: api.upgradeFormula,
+    onSuccess: (result) => {
+      const item = INSTALL_CATALOG.find((entry) => entry.formula === result.formula);
+      setUpgradeFormula(null);
+      setError(null);
+      setNotice(t("updateSuccess").replace("{name}", item?.name ?? result.formula));
+      queryClient.invalidateQueries({ queryKey: ["formula-statuses"] });
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["activity"] });
+    },
+    onError: (err) => {
+      setUpgradeFormula(null);
       setError(formatTauriError(err));
     }
   });
@@ -229,6 +255,16 @@ function InstallView() {
         <button
           type="button"
           role="tab"
+          aria-selected={installFilter === "updates"}
+          className={installFilter === "updates" ? "active" : ""}
+          disabled={!statusesLoaded}
+          onClick={() => setInstallFilter("updates")}
+        >
+          {t("updatesAvailable")} <span>{statusesLoaded ? updatesCount : "…"}</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
           aria-selected={installFilter === "installed"}
           className={installFilter === "installed" ? "active" : ""}
           disabled={!statusesLoaded}
@@ -248,6 +284,8 @@ function InstallView() {
           const status = statusByFormula.get(item.formula);
           const installed = status?.installed ?? false;
           const pending = installMutation.isPending && installMutation.variables === item.formula;
+          const upgradePending =
+            upgradeMutation.isPending && upgradeMutation.variables === item.formula;
           return (
             <article className="install-card" key={item.formula}>
               <div className="install-card-icon">
@@ -264,7 +302,26 @@ function InstallView() {
                 </div>
               </div>
               <div className="install-card-action">
-                {installed ? (
+                {installFilter === "updates" && status?.outdated ? (
+                  <div className="update-action">
+                    <span className="update-version">
+                      {status.version ?? "?"} <span aria-hidden="true">→</span>{" "}
+                      {status.current_version ?? "?"}
+                    </span>
+                    <button
+                      className="primary-button"
+                      disabled={upgradePending}
+                      onClick={() => setUpgradeFormula(item.formula)}
+                    >
+                      {upgradePending ? (
+                        <Loader2 className="spin" size={15} />
+                      ) : (
+                        <ArrowUpCircle size={15} />
+                      )}
+                      {upgradePending ? t("updating") : t("updateAction")}
+                    </button>
+                  </div>
+                ) : installed ? (
                   <span className="installed-label">
                     <Check size={14} />
                     {t("installed")}
@@ -287,6 +344,9 @@ function InstallView() {
       </div>
       {filtered.length === 0 && installFilter === "installed" && (
         <div className="empty-state">{t("noInstalledServices")}</div>
+      )}
+      {filtered.length === 0 && installFilter === "updates" && (
+        <div className="empty-state">{t("noUpdatesAvailable")}</div>
       )}
       {selected && (
         <div
@@ -321,6 +381,55 @@ function InstallView() {
                     <PackagePlus size={15} />
                   )}
                   {installMutation.isPending ? t("installing") : t("installAction")}
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+      {selectedUpgrade && (
+        <div
+          className="dialog-backdrop"
+          onMouseDown={() => !upgradeMutation.isPending && setUpgradeFormula(null)}
+        >
+          <section
+            className="confirm-dialog install-dialog"
+            role="alertdialog"
+            aria-modal="true"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="dialog-content">
+              <h2>{t("updateConfirmTitle").replace("{name}", selectedUpgrade.name)}</h2>
+              <p>{t("updateConfirmDescription")}</p>
+              <p className="upgrade-version-path">
+                {t("updateVersionPath")
+                  .replace("{from}", statusByFormula.get(selectedUpgrade.formula)?.version ?? "?")
+                  .replace(
+                    "{to}",
+                    statusByFormula.get(selectedUpgrade.formula)?.current_version ?? "?"
+                  )}
+              </p>
+              <code className="delete-command">
+                brew upgrade --formula {selectedUpgrade.formula}
+              </code>
+              <div className="dialog-actions">
+                <button
+                  disabled={upgradeMutation.isPending}
+                  onClick={() => setUpgradeFormula(null)}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  className="primary-button"
+                  disabled={upgradeMutation.isPending}
+                  onClick={() => upgradeMutation.mutate(selectedUpgrade.formula)}
+                >
+                  {upgradeMutation.isPending ? (
+                    <Loader2 className="spin" size={15} />
+                  ) : (
+                    <ArrowUpCircle size={15} />
+                  )}
+                  {upgradeMutation.isPending ? t("updating") : t("updateAction")}
                 </button>
               </div>
             </div>

@@ -170,6 +170,8 @@ pub struct FormulaStatusDto {
     pub formula: String,
     pub installed: bool,
     pub version: Option<String>,
+    pub outdated: bool,
+    pub current_version: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -181,6 +183,8 @@ pub struct FormulaInstallResultDto {
     pub success: bool,
     pub service_id: Option<String>,
 }
+
+pub type FormulaUpgradeResultDto = FormulaInstallResultDto;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogReadOptionsDto {

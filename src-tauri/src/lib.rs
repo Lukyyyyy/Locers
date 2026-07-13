@@ -17,10 +17,11 @@ use db::Database;
 use error::{AppError, AppResult};
 use homebrew::{HomebrewProvider, ServiceProvider};
 use models::{
-    AppInfoDto, DataCleanupResultDto, FormulaInstallResultDto, FormulaStatusDto, LogReadOptionsDto,
-    LogReadResultDto, OperationHistoryDto, OperationResultDto, PortBindingDto,
-    PortRefreshResultDto, RefreshResultDto, ResourceMetricPointDto, RuntimeMetricsRefreshResultDto,
-    ServiceDetailDto, ServiceStatus, ServiceSummaryDto,
+    AppInfoDto, DataCleanupResultDto, FormulaInstallResultDto, FormulaStatusDto,
+    FormulaUpgradeResultDto, LogReadOptionsDto, LogReadResultDto, OperationHistoryDto,
+    OperationResultDto, PortBindingDto, PortRefreshResultDto, RefreshResultDto,
+    ResourceMetricPointDto, RuntimeMetricsRefreshResultDto, ServiceDetailDto, ServiceStatus,
+    ServiceSummaryDto,
 };
 use tauri::{async_runtime, AppHandle, Manager, State};
 
@@ -64,20 +65,99 @@ fn validate_installable_formula(formula: &str) -> AppResult<()> {
 async fn get_formula_statuses(app: AppHandle) -> AppResult<Vec<FormulaStatusDto>> {
     async_runtime::spawn_blocking(move || {
         let state = app.state::<AppState>();
+        // Both commands are read-only and independent. Running them together keeps
+        // the first paint bounded by the slower command instead of their sum.
+        let outdated_provider = state.provider.clone();
+        let installed_provider = state.provider.clone();
+        let outdated_task = std::thread::spawn(move || outdated_provider.outdated_formulae());
+        let installed_task = std::thread::spawn(move || installed_provider.installed_formulae());
+        let outdated: HashMap<_, _> = outdated_task
+            .join()
+            .map_err(|_| AppError::Command("Homebrew outdated task panicked".into()))??
+            .into_iter()
+            .map(|(formula, installed, current)| (formula, (installed, current)))
+            .collect();
+        let installed: HashMap<_, _> = installed_task
+            .join()
+            .map_err(|_| AppError::Command("Homebrew installed formula task panicked".into()))??
+            .into_iter()
+            .collect();
         INSTALLABLE_FORMULAE
             .iter()
             .map(|formula| {
-                let (installed, version) = state.provider.formula_status(formula)?;
+                let available_update = outdated.get(*formula);
                 Ok(FormulaStatusDto {
                     formula: (*formula).into(),
-                    installed,
-                    version,
+                    installed: installed.contains_key(*formula),
+                    version: installed
+                        .get(*formula)
+                        .cloned()
+                        .or_else(|| available_update.and_then(|item| item.0.clone())),
+                    outdated: available_update.is_some(),
+                    current_version: available_update.and_then(|item| item.1.clone()),
                 })
             })
             .collect()
     })
     .await
     .map_err(|err| AppError::Command(format!("formula status task failed: {err}")))?
+}
+
+#[tauri::command]
+async fn upgrade_formula(app: AppHandle, formula: String) -> AppResult<FormulaUpgradeResultDto> {
+    validate_installable_formula(&formula)?;
+    async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        let service = state
+            .db
+            .lock()
+            .map_err(|_| AppError::StatePoisoned)?
+            .list_services()?
+            .into_iter()
+            .find(|service| service.formula == formula);
+        let service_id = service.as_ref().map(|service| service.id.clone());
+        let command = vec![
+            "brew".into(),
+            "upgrade".into(),
+            "--formula".into(),
+            formula.clone(),
+        ];
+        let output = state.provider.upgrade(&formula)?;
+        if let Some(service) = &service {
+            state
+                .db
+                .lock()
+                .map_err(|_| AppError::StatePoisoned)?
+                .record_operation(
+                    &service.id,
+                    &service.provider,
+                    "upgrade",
+                    &command,
+                    output.exit_code,
+                    output.duration_ms,
+                    &output.stdout,
+                    &output.stderr,
+                    (output.exit_code != 0).then_some("Homebrew upgrade failed"),
+                )?;
+        }
+        if output.exit_code != 0 {
+            return Err(AppError::OperationFailed {
+                message: "Homebrew upgrade failed".into(),
+                operation: None,
+            });
+        }
+        refresh_services_blocking(&state)?;
+        Ok(FormulaUpgradeResultDto {
+            formula,
+            command,
+            stdout: output.stdout,
+            stderr: output.stderr,
+            success: true,
+            service_id,
+        })
+    })
+    .await
+    .map_err(|err| AppError::Command(format!("upgrade task failed: {err}")))?
 }
 
 #[tauri::command]
@@ -741,6 +821,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_formula_statuses,
             install_formula,
+            upgrade_formula,
             refresh_services,
             refresh_ports,
             refresh_runtime_metrics,

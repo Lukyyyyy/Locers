@@ -33,6 +33,20 @@ struct BrewServiceRow {
     file: Option<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct BrewOutdatedResponse {
+    #[serde(default)]
+    formulae: Vec<BrewOutdatedFormula>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BrewOutdatedFormula {
+    name: String,
+    #[serde(default)]
+    installed_versions: Vec<String>,
+    current_version: Option<String>,
+}
+
 impl HomebrewProvider {
     pub fn new(runner: CommandRunner) -> Self {
         Self { runner }
@@ -68,16 +82,32 @@ impl HomebrewProvider {
         }
     }
 
-    pub fn formula_status(&self, formula: &str) -> AppResult<(bool, Option<String>)> {
+    pub fn installed_formulae(&self) -> AppResult<Vec<(String, String)>> {
         let brew = CommandRunner::find_brew()?;
         let output = self
             .runner
-            .run(&brew, &["list", "--formula", "--versions", formula])?;
+            .run(&brew, &["list", "--formula", "--versions"])?;
         if output.exit_code != 0 {
-            return Ok((false, None));
+            return Err(crate::error::AppError::Command(format!(
+                "Homebrew installed formula check failed: {}",
+                output.stderr.trim()
+            )));
         }
-        let version = output.stdout.split_whitespace().nth(1).map(str::to_string);
-        Ok((true, version))
+        Ok(Self::parse_installed_formulae(&output.stdout))
+    }
+
+    fn parse_installed_formulae(input: &str) -> Vec<(String, String)> {
+        input
+            .lines()
+            .filter_map(|line| {
+                let mut fields = line.split_whitespace();
+                let formula = fields.next()?;
+                // Homebrew may retain multiple installed keg versions. The last
+                // value is the active/newest one, matching the previous status UI.
+                let version = fields.last()?;
+                Some((formula.to_string(), version.to_string()))
+            })
+            .collect()
     }
 
     pub fn install(&self, formula: &str) -> AppResult<CommandOutput> {
@@ -85,6 +115,43 @@ impl HomebrewProvider {
         self.runner.run_with_timeout(
             &brew,
             &["install", "--formula", formula],
+            Duration::from_secs(15 * 60),
+        )
+    }
+
+    pub fn outdated_formulae(&self) -> AppResult<Vec<(String, Option<String>, Option<String>)>> {
+        let brew = CommandRunner::find_brew()?;
+        let output = self
+            .runner
+            .run(&brew, &["outdated", "--formula", "--json=v2"])?;
+        if output.exit_code != 0 {
+            return Err(crate::error::AppError::Command(format!(
+                "Homebrew outdated check failed: {}",
+                output.stderr.trim()
+            )));
+        }
+        Self::parse_outdated_json(&output.stdout)
+    }
+
+    fn parse_outdated_json(
+        input: &str,
+    ) -> AppResult<Vec<(String, Option<String>, Option<String>)>> {
+        let response: BrewOutdatedResponse = serde_json::from_str(input)?;
+        Ok(response
+            .formulae
+            .into_iter()
+            .map(|item| {
+                let installed = item.installed_versions.last().cloned();
+                (item.name, installed, item.current_version)
+            })
+            .collect())
+    }
+
+    pub fn upgrade(&self, formula: &str) -> AppResult<CommandOutput> {
+        let brew = CommandRunner::find_brew()?;
+        self.runner.run_with_timeout(
+            &brew,
+            &["upgrade", "--formula", formula],
             Duration::from_secs(15 * 60),
         )
     }
@@ -273,6 +340,42 @@ mod tests {
 
         assert_eq!(services[0].status, ServiceStatus::Error);
         assert_eq!(services[1].status, ServiceStatus::Error);
+    }
+
+    #[test]
+    fn parses_outdated_formula_versions() {
+        let json = r#"{
+          "formulae": [{
+            "name": "redis",
+            "installed_versions": ["8.8.0"],
+            "current_version": "8.8.1",
+            "pinned": false
+          }],
+          "casks": []
+        }"#;
+
+        let formulae = HomebrewProvider::parse_outdated_json(json).expect("outdated formulae");
+        assert_eq!(
+            formulae,
+            vec![(
+                "redis".to_string(),
+                Some("8.8.0".to_string()),
+                Some("8.8.1".to_string())
+            )]
+        );
+    }
+
+    #[test]
+    fn parses_installed_formulae_in_one_batch() {
+        let installed =
+            HomebrewProvider::parse_installed_formulae("mysql 9.6.0_3\nredis 8.8.0 8.8.1\n\n");
+        assert_eq!(
+            installed,
+            vec![
+                ("mysql".to_string(), "9.6.0_3".to_string()),
+                ("redis".to_string(), "8.8.1".to_string())
+            ]
+        );
     }
 
     #[test]

@@ -822,6 +822,55 @@ describe("App", () => {
     expect(screen.queryByRole("heading", { name: "MySQL" })).not.toBeInTheDocument();
   });
 
+  it("filters and upgrades an outdated catalog service after confirmation", async () => {
+    const user = userEvent.setup();
+    vi.mocked(invoke).mockImplementation((command: string) => {
+      if (command === "get_formula_statuses") {
+        return Promise.resolve([
+          {
+            formula: "redis",
+            installed: true,
+            version: "8.8.0",
+            outdated: true,
+            current_version: "8.8.1"
+          }
+        ]);
+      }
+      if (command === "upgrade_formula") {
+        return Promise.resolve({
+          formula: "redis",
+          command: ["brew", "upgrade", "--formula", "redis"],
+          stdout: "upgraded",
+          stderr: "",
+          success: true,
+          service_id: "svc-redis"
+        });
+      }
+      return mockDefaultInvoke(command);
+    });
+
+    renderApp();
+    await user.click(screen.getByRole("button", { name: "Install" }));
+    const updatesTab = await screen.findByRole("tab", { name: "Updates 1" });
+    const redisInAll = screen.getByRole("heading", { name: "Redis" }).closest("article");
+    expect(within(redisInAll!).queryByRole("button", { name: "Update" })).not.toBeInTheDocument();
+    expect(within(redisInAll!).getByText("Installed 8.8.0")).toBeInTheDocument();
+
+    await user.click(updatesTab);
+
+    expect(screen.getByRole("heading", { name: "Redis" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "MySQL" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Update" }));
+    expect(screen.getByText("Installed 8.8.0 → available 8.8.1")).toBeInTheDocument();
+    expect(screen.getByText("brew upgrade --formula redis")).toBeInTheDocument();
+    await user.click(
+      within(screen.getByRole("alertdialog")).getByRole("button", { name: "Update" })
+    );
+
+    expect(invoke).toHaveBeenCalledWith("upgrade_formula", { formula: "redis" });
+    expect(await screen.findByText("Redis was updated successfully.")).toBeInTheDocument();
+  });
+
   it("does not show a zero installed count while statuses are loading", async () => {
     const user = userEvent.setup();
     let resolveStatuses: (value: unknown) => void = () => undefined;

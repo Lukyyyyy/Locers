@@ -133,6 +133,8 @@ export interface FormulaStatusDto {
   formula: string;
   installed: boolean;
   version?: string | null;
+  outdated: boolean;
+  current_version?: string | null;
 }
 
 export interface FormulaInstallResultDto {
@@ -143,6 +145,8 @@ export interface FormulaInstallResultDto {
   success: boolean;
   service_id?: string | null;
 }
+
+export type FormulaUpgradeResultDto = FormulaInstallResultDto;
 
 export interface LogReadResultDto {
   source?: LogSourceDto | null;
